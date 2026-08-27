@@ -1,0 +1,1526 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>호흡 탐험대 · 중2 과학 호흡계 80제</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root{
+  --artery:#0d8f82; --artery-dark:#0b6d63; --vein:#d9822b; --vein-dark:#a86419;
+  --bg1:#e7f6f3; --bg2:#fdf1e3; --card:#ffffff; --ink:#20302e; --sub:#6c8481;
+  --good:#2e8b57; --warn:#d9822b; --gold:#d4a017; --line:#dcece8;
+}
+*{box-sizing:border-box;}
+body{margin:0;font-family:'Noto Sans KR',sans-serif;color:var(--ink);
+  background:linear-gradient(160deg,var(--bg1) 0%, #fbf3ea 45%, var(--bg2) 100%);
+  min-height:100vh;padding-bottom:40px;}
+.wrap{max-width:640px;margin:0 auto;padding:18px 16px 60px;}
+.hero{text-align:center;padding:18px 10px 6px;}
+.hero .eyebrow{font-size:13px;color:var(--artery);font-weight:700;letter-spacing:.5px;}
+.hero h1{font-family:Georgia,'Nanum Myeongjo','Batang',serif;font-size:32px;margin:4px 0 6px;
+  background:linear-gradient(90deg,var(--artery),var(--vein));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.hero p{font-size:13px;color:var(--sub);margin:0 0 14px;}
+.gauge{height:10px;border-radius:6px;background:linear-gradient(90deg,var(--vein),#c8b7a6,var(--artery),#3fae6a);position:relative;margin-bottom:4px;}
+.gauge .mark{position:absolute;top:-4px;width:3px;height:18px;background:#2b2320;border-radius:2px;}
+.gauge-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--sub);margin-bottom:16px;}
+.card{background:var(--card);border-radius:22px;box-shadow:0 10px 30px rgba(150,60,40,.08);padding:22px 20px;margin-bottom:16px;}
+h2.card-title{font-family:Georgia,'Nanum Myeongjo','Batang',serif;font-size:22px;margin:0 0 14px;color:var(--artery-dark);}
+label.field-label{display:block;font-size:14px;font-weight:700;margin:14px 0 6px;color:var(--ink);}
+input[type=text]{width:100%;padding:14px;border-radius:14px;border:1.5px solid #e6d3d0;font-size:16px;background:#fffaf9;}
+input[type=text]:focus{outline:2px solid var(--artery);}
+.chip-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px;}
+.chip{border:1.5px solid #e6d3d0;border-radius:14px;padding:12px;text-align:center;cursor:pointer;background:#fffaf9;transition:.15s;}
+.chip b{display:block;font-size:14px;}
+.chip small{color:var(--sub);font-size:11px;}
+.chip.active{border-color:var(--artery);background:#fdeceb;box-shadow:0 0 0 2px rgba(192,57,43,.15) inset;}
+.toggle-row{display:flex;align-items:center;gap:8px;margin:12px 0;font-size:14px;}
+.toggle-row input{width:18px;height:18px;}
+.mode-card{border:1.5px solid #e6d3d0;border-radius:16px;padding:14px 16px;margin-bottom:10px;cursor:pointer;background:#fffaf9;}
+.mode-card.active{border-color:var(--artery);background:#fdeceb;box-shadow:0 0 0 2px rgba(192,57,43,.15) inset;}
+.mode-card .mt{font-weight:700;font-size:15px;}
+.mode-card .md{font-size:12px;color:var(--sub);margin-top:2px;}
+.mission{background:linear-gradient(90deg,#e0473a,#c0392b);color:#fff;border-radius:16px;padding:16px;text-align:center;font-weight:700;font-size:15px;margin:14px 0;cursor:pointer;}
+.btn{display:block;width:100%;text-align:center;padding:16px;border-radius:16px;font-weight:800;font-size:16px;border:none;cursor:pointer;text-decoration:none;box-sizing:border-box;}
+.btn-primary{background:linear-gradient(90deg,var(--artery),var(--artery-dark));color:#fff;box-shadow:0 8px 18px rgba(192,57,43,.28);}
+.btn-outline{background:#fff;border:1.6px solid var(--artery);color:var(--artery-dark);}
+.btn-ghost{background:#f4eeee;color:var(--ink);}
+.row2{display:flex;gap:10px;margin-top:10px;}
+.row2 .btn{flex:1;}
+.small-note{font-size:12px;color:var(--sub);text-align:center;margin-top:10px;}
+.tag{display:inline-block;background:#fdeceb;color:var(--artery-dark);font-weight:700;font-size:13px;padding:6px 12px;border-radius:20px;margin-bottom:10px;}
+.meta-row{display:flex;justify-content:space-between;font-size:13px;color:var(--sub);margin-bottom:8px;}
+.timerbar-outer{height:8px;background:#f1e4e2;border-radius:5px;overflow:hidden;margin-bottom:14px;}
+.timerbar-inner{height:100%;background:linear-gradient(90deg,var(--artery),var(--vein));transition:width 1s linear;}
+.qtext{font-size:19px;font-weight:700;line-height:1.5;margin:8px 0 18px;}
+.choice{border:1.6px solid #e6d3d0;border-radius:16px;padding:16px;margin-bottom:10px;font-size:15px;cursor:pointer;background:#fffaf9;}
+.choice.sel{border-color:var(--vein);background:#eaf2fb;}
+.choice.correct{border-color:var(--good);background:#e7f6ec;}
+.choice.wrong{border-color:#c0392b;background:#fdeceb;}
+.choice.locked{background:#e3e6df;border-color:#c7cdc0;color:#15190f;cursor:not-allowed;}
+.lock-note{font-size:12px;font-weight:700;margin-top:2px;}
+.lock-note.wait{color:var(--warn);}
+.lock-note.go{color:var(--artery-dark);}
+.lock-countdown{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:#f6f4ee;border:3px dashed #d8cfa8;border-radius:18px;padding:10px 14px 14px;margin:4px 0 14px;font-weight:800;color:#a8631a;font-size:14px;transition:.2s;}
+.lock-countdown .num{font-size:64px;font-weight:900;font-family:Georgia,'Nanum Myeongjo','Batang',serif;color:var(--vein-dark);min-width:60px;text-align:center;line-height:1;}
+.lock-countdown .go-emoji{font-size:44px;line-height:1;}
+.lock-countdown.go{color:var(--artery-dark);border-color:var(--artery);background:#fdeceb;border-style:solid;}
+.scope-row{display:flex;gap:8px;margin:6px 0 2px;}
+.scope-chip{flex:1;border:1.5px solid #e6d3d0;border-radius:12px;padding:9px 6px;text-align:center;font-size:12.5px;font-weight:700;cursor:pointer;background:#fffaf9;color:var(--sub);}
+.scope-chip.active{border-color:var(--artery);background:#fdeceb;color:var(--artery-dark);}
+.hist-item{border:1.5px solid var(--line);border-radius:16px;padding:14px 16px;margin-bottom:10px;cursor:pointer;background:#fffaf9;}
+.hist-item:active{background:#f4eeee;}
+.hist-top{display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:14px;}
+.hist-sub{font-size:12px;color:var(--sub);margin-top:4px;}
+.explain-box{background:#fdeceb;border-radius:14px;padding:14px 16px;font-size:14px;line-height:1.6;margin:10px 0 16px;}
+.explain-box.right{background:#e7f6ec;}
+.explain-box b{display:block;margin-bottom:6px;font-size:15px;}
+.giveup{display:block;text-align:center;color:var(--sub);font-size:13px;margin-top:14px;text-decoration:underline;cursor:pointer;}
+.combo-pop{position:fixed;top:40%;left:50%;transform:translate(-50%,-50%) scale(0.7);background:linear-gradient(135deg,var(--gold),#f3c94a);color:#5a3d00;font-weight:900;font-size:26px;padding:22px 34px;border-radius:24px;box-shadow:0 20px 40px rgba(0,0,0,.25);z-index:999;opacity:0;transition:.25s;text-align:center;}
+.combo-pop.show{opacity:1;transform:translate(-50%,-50%) scale(1);}
+.score-big{text-align:center;font-family:Georgia,'Nanum Myeongjo','Batang',serif;font-size:54px;font-weight:700;color:var(--artery-dark);margin:6px 0 2px;}
+.score-sub{text-align:center;color:var(--sub);font-size:14px;margin-bottom:14px;}
+.fanfare{text-align:center;font-weight:900;font-size:19px;border-radius:16px;padding:16px;margin:14px 0;}
+.fanfare.f80{background:#fdf2e3;color:#a8631a;}
+.fanfare.f90{background:#fdeceb;color:var(--artery-dark);}
+.fanfare.f95{background:#eaf2fb;color:var(--vein-dark);}
+.fanfare.f100{background:linear-gradient(135deg,#ffe27a,#ffb648);color:#6b3d00;}
+.point-box{display:flex;justify-content:space-between;align-items:center;background:#f7f2ee;border-radius:14px;padding:14px 16px;margin:10px 0;font-size:14px;}
+.point-box b{color:var(--artery-dark);font-size:16px;}
+.level-pill{background:#fdeceb;color:var(--artery-dark);font-weight:700;font-size:13px;padding:8px 14px;border-radius:20px;display:inline-block;margin-top:6px;}
+.coupon-toast{background:linear-gradient(135deg,#ffd9a0,#ffb648);border-radius:16px;padding:16px;text-align:center;font-weight:800;color:#6b3d00;margin:14px 0;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th,td{padding:8px 6px;text-align:center;border-bottom:1px solid var(--line);}
+th{color:var(--sub);font-weight:700;background:#fdf7f6;}
+.tabbar{display:flex;gap:4px;border-bottom:2px solid var(--line);margin-bottom:14px;overflow-x:auto;}
+.tabbtn{flex:1;text-align:center;padding:10px 4px;font-size:13px;font-weight:700;color:var(--sub);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;}
+.tabbtn.active{color:var(--artery-dark);border-color:var(--artery);}
+.month-head{background:#f7f2ee;border-radius:12px;padding:12px 14px;margin-bottom:6px;font-weight:700;display:flex;justify-content:space-between;cursor:pointer;}
+.warnbox{background:#fdf2e3;border-radius:12px;padding:12px 14px;font-size:12.5px;color:#7a5a1a;margin-bottom:14px;}
+.hidden{display:none !important;}
+.modal-overlay{position:fixed;inset:0;background:rgba(30,15,10,.5);display:flex;align-items:center;justify-content:center;z-index:1200;padding:24px;}
+.modal-overlay.hidden{display:none !important;}
+.modal-box{background:#fff;border-radius:20px;padding:24px 20px;max-width:340px;width:100%;box-shadow:0 24px 60px rgba(0,0,0,.3);}
+.modal-box p{font-size:15px;line-height:1.6;margin:0 0 18px;text-align:center;color:var(--ink);white-space:pre-line;}
+.spinner{display:inline-block;width:32px;height:32px;border:4px solid #f0dcdc;border-top-color:var(--artery);border-radius:50%;animation:spin .8s linear infinite;margin-bottom:10px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.footer-copy{text-align:center;color:#bba9a2;font-size:12px;margin-top:20px;}
+.hof-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);}
+.hof-rank{width:28px;height:28px;border-radius:50%;background:#f7f2ee;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:var(--artery-dark);}
+.hof-rank.gold{background:#ffd54f;color:#6b3d00;}
+.hof-rank.silver{background:#d8d8d8;}
+.hof-rank.bronze{background:#e0ad7a;color:#4a2b00;}
+.kbdinput{width:100%;padding:14px;border-radius:14px;border:1.6px solid var(--artery);font-size:16px;margin-bottom:14px;background:#eaf2fb;}
+.wrongitem{border:1.5px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px;}
+.wrongitem .wq{font-weight:700;margin-bottom:6px;}
+.wrongitem .wa{color:var(--good);font-weight:700;font-size:13px;}
+.wrongitem .wu{color:#c0392b;font-size:13px;}
+@media print{
+  body *{visibility:hidden;}
+  #printArea, #printArea *{visibility:visible;}
+  #printArea{position:absolute;left:0;top:0;width:100%;}
+}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+
+<div class="combo-pop" id="comboPop"></div>
+<div class="modal-overlay hidden" id="modalOverlay">
+  <div class="modal-box">
+    <p id="modalMsg"></p>
+    <div class="row2" id="modalBtns"></div>
+  </div>
+</div>
+
+<script>
+/* ============ QUESTION BANK ============ */
+const CATS = [
+  {id:'resp', name:'호흡계의 구조', icon:'🫁'},
+  {id:'inhale', name:'들숨과 날숨', icon:'💨'},
+  {id:'movement', name:'호흡운동의 원리', icon:'🌬️'},
+  {id:'exchange', name:'기체 교환', icon:'🔄'},
+  {id:'experiment', name:'호흡운동 모형 탐구', icon:'🧪'},
+];
+
+function M(c,q,o,a,e){return {c,t:'mcq',q,o,a,e};}
+function S(c,q,a,e){return {c,t:'short',q,a,e};}
+
+const QUESTIONS = [
+// ===== 호흡계의 구조 =====
+M('resp','호흡계를 구성하는 기관으로 옳지 않은 것은?',['심장','코','숨관','폐(허파)'],0,'호흡계는 코, 숨관, 숨관가지, 폐로 이루어지며 심장은 순환계의 기관이에요.'),
+M('resp','차고 건조한 공기를 따뜻하고 축축하게 만드는 호흡계 기관은?',['숨관','코','허파꽈리','가로막'],1,'코는 차고 건조한 공기를 따뜻하고 축축하게 만들어요.'),
+M('resp','안쪽 벽에 섬모가 있어 먼지나 세균을 걸러내는 기관은?',['코','허파꽈리','숨관','가로막'],2,'숨관의 안쪽 벽에는 섬모가 있어 먼지나 세균 등을 걸러내요.'),
+M('resp','폐 속에서 더 많은 가지로 갈라져 허파꽈리와 연결되는 것은?',['숨관','가로막','갈비뼈','숨관가지'],3,'숨관가지는 폐 속에서 더 많은 가지로 갈라져 허파꽈리와 연결돼요.'),
+M('resp','폐(허파)의 위치와 개수에 대한 설명으로 옳은 것은?',['가슴 속에 좌우 한 개씩 있다','배 속에 한 개만 있다','목 부위에 두 개 있다','등 쪽에 세 개 있다'],0,'폐는 가슴 속에 좌우 한 개씩 있어요.'),
+M('resp','갈비뼈와 가로막으로 둘러싸인, 폐와 심장이 들어 있는 가슴 안쪽 공간을 무엇이라 하는가?',['복강','흉강','비강','기관강'],1,'흉강은 갈비뼈와 가로막으로 둘러싸인 가슴 안쪽 공간으로 폐, 심장이 들어 있어요.'),
+M('resp','폐를 둘러싸고 있는 구조로 옳게 짝지은 것은?',['코와 숨관','숨관과 숨관가지','갈비뼈와 가로막','허파꽈리와 모세혈관'],2,'폐는 갈비뼈와 가로막으로 둘러싸인 흉강에 들어 있어요.'),
+M('resp','폐가 스스로 수축하거나 이완할 수 없는 까닭은?',['크기가 너무 커서','혈관이 없어서','섬모가 없어서','폐에 근육이 없어서'],3,'폐는 근육이 없어 스스로 수축하거나 이완하지 못해요.'),
+M('resp','폐를 구성하는 작은 공기주머니를 무엇이라 하는가?',['허파꽈리','숨관가지','흉강','가로막'],0,'허파꽈리는 폐를 구성하는 작은 공기주머니예요.'),
+M('resp','허파꽈리의 벽에 대한 설명으로 옳은 것은?',['여러 층의 두꺼운 근육으로 되어 있다','얇은 세포층으로 이루어져 있다','뼈로 둘러싸여 있다','섬모로 덮여 있다'],1,'허파꽈리는 얇은 세포층으로 이루어져 있어요.'),
+M('resp','허파꽈리의 표면을 둘러싸고 있는 것은?',['섬모','가로막','모세혈관','연골'],2,'허파꽈리의 표면은 모세혈관으로 둘러싸여 있어요.'),
+M('resp','사람의 폐 한 개는 약 몇 개의 허파꽈리로 이루어져 있는가?',['3만 개','3백만 개','3천만 개','3억 개'],3,'폐는 약 3억 개의 허파꽈리로 이루어져 있어요.'),
+M('resp','폐의 아랫부분에 있는 근육으로 된 막을 무엇이라 하는가?',['가로막','갈비뼈','흉강','숨관'],0,'가로막은 폐의 아랫부분에 있는 근육으로 된 막이에요.'),
+M('resp','가로막의 다른 이름은?',['연골막','횡격막','점막','섬모막'],1,'가로막은 횡격막이라고도 해요.'),
+M('resp','갈비뼈의 기능으로 가장 알맞은 것은?',['기체를 교환한다','먼지를 걸러낸다','폐를 보호한다','혈액을 저장한다'],2,'갈비뼈는 폐를 보호하는 역할을 해요.'),
+M('resp','허파꽈리와 작은창자 융털의 공통적인 역할은?',['체온을 유지한다','호르몬을 분비한다','세균을 죽인다','표면적을 넓힌다'],3,'허파꽈리와 융털은 모두 표면적을 넓혀 물질 교환을 효율적으로 만들어요.'),
+
+// ===== 들숨과 날숨 =====
+M('inhale','들이쉬는 숨을 무엇이라 하는가?',['들숨','날숨','호흡','확산'],0,'들이쉬는 숨을 들숨이라고 해요.'),
+M('inhale','내쉬는 숨을 무엇이라 하는가?',['들숨','날숨','호흡운동','기체교환'],1,'내쉬는 숨을 날숨이라고 해요.'),
+M('inhale','들숨과 날숨의 성분을 비교할 때 산소의 양은 어떠한가?',['날숨이 들숨보다 많다','들숨과 날숨이 같다','들숨이 날숨보다 많다','둘 다 산소가 없다'],2,'몸에서 산소를 흡수하므로 들숨에 산소가 더 많아요.'),
+M('inhale','들숨과 날숨의 성분을 비교할 때 이산화 탄소의 양은 어떠한가?',['들숨이 날숨보다 많다','들숨과 날숨이 같다','둘 다 이산화 탄소가 없다','날숨이 들숨보다 많다'],3,'몸에서 이산화 탄소를 내보내므로 날숨에 이산화 탄소가 더 많아요.'),
+M('inhale','들숨보다 날숨에 이산화 탄소가 더 많은 까닭으로 옳은 것은?',['몸에서 이산화 탄소를 내보내기 때문에','코에서 이산화 탄소를 만들기 때문에','가로막이 이산화 탄소를 저장하기 때문에','심장이 이산화 탄소를 소모하기 때문에'],0,'공기가 폐를 지나는 동안 몸에서 이산화 탄소를 내보내기 때문이에요.'),
+M('inhale','초록색 BTB 용액이 산성을 띠면 어떤 색으로 변하는가?',['파란색','노란색','초록색 그대로','보라색'],1,'BTB 용액은 산성일 때 노란색을 띠어요.'),
+M('inhale','초록색 BTB 용액이 염기성을 띠면 어떤 색으로 변하는가?',['노란색','빨간색','파란색','무색'],2,'BTB 용액은 염기성일 때 파란색을 띠어요.'),
+M('inhale','BTB 용액에 공기 펌프로 들숨을 넣은 것과 날숨을 불어넣은 것을 비교할 때, 색깔이 더 빨리 노란색으로 변하는 쪽은?',['공기 펌프로 들숨을 넣은 쪽','둘 다 색이 변하지 않는다','둘의 변하는 속도가 같다','날숨을 불어넣은 쪽'],3,'날숨에 이산화 탄소가 더 많이 들어 있어 날숨을 넣은 쪽이 더 빨리 노란색으로 변해요.'),
+M('inhale','이산화 탄소가 물에 녹으면 어떤 성질을 띠는가?',['산성','염기성','중성','비활성'],0,'이산화 탄소가 물에 녹으면 산성을 띠어요.'),
+M('inhale','BTB 용액 실험에서 날숨을 불어넣은 쪽의 색깔이 더 빨리 변하는 근본적인 까닭은?',['날숨의 온도가 더 낮아서','이산화 탄소가 더 많아서','날숨에 질소가 더 많아서','날숨에 수증기가 없어서'],1,'날숨에는 이산화 탄소가 더 많이 들어 있어 물에 녹으면 산성을 띠게 돼요.'),
+M('inhale','넓은 의미의 \'호흡\'에 포함되지 않는 것은?',['숨을 쉬는 것','산소와 이산화 탄소의 교환','심장의 수축과 이완','생명활동에 필요한 에너지를 얻는 과정'],2,'넓은 의미의 호흡은 숨쉬기, 산소와 이산화 탄소의 교환, 에너지를 얻는 과정까지 포함해요. 심장의 수축과 이완은 순환계의 작용이에요.'),
+M('inhale','숨쉬기뿐 아니라 산소와 이산화 탄소의 교환, 에너지를 얻는 과정까지 포함하는 것은?',['좁은 의미의 호흡','기체 교환','확산','넓은 의미의 호흡'],3,'넓은 의미의 호흡은 숨쉬기뿐 아니라 기체 교환과 에너지를 얻는 과정까지 포함해요.'),
+M('inhale','숨을 들이쉴 때 공기가 이동하는 순서로 옳은 것은?',['코 → 숨관 → 숨관가지 → 허파꽈리','코 → 숨관가지 → 숨관 → 허파꽈리','숨관 → 코 → 허파꽈리 → 숨관가지','허파꽈리 → 숨관 → 숨관가지 → 코'],0,'공기는 코 → 숨관 → 숨관가지 → 폐 속 허파꽈리 순서로 이동해요.'),
+M('inhale','숨관이 두 개의 숨관가지로 갈라져 연결되는 곳은?',['코와 심장','좌우 폐','심장과 위','좌우 콧구멍'],1,'숨관은 두 개의 숨관가지로 갈라져 각각 좌우 폐와 연결돼요.'),
+M('inhale','콧속의 가는 털과 끈끈한 액체가 하는 역할은?',['공기를 차게 만든다','산소를 저장한다','먼지나 세균 등을 걸러낸다','이산화 탄소를 만든다'],2,'콧속의 가는 털과 끈끈한 액체는 먼지나 세균 등을 걸러내요.'),
+M('inhale','초록색 BTB 용액이 중성일 때의 색깔은?',['노란색','파란색','빨간색','초록색'],3,'BTB 용액은 중성일 때 초록색을 띠어요.'),
+
+// ===== 호흡운동의 원리 =====
+M('movement','호흡운동이 일어나는 원리로 옳은 것은?',['갈비뼈와 가로막의 움직임으로 일어난다','폐 스스로 수축과 이완을 반복하며 일어난다','심장의 박동에 의해 일어난다','숨관의 섬모 운동에 의해 일어난다'],0,'폐는 근육이 없어 스스로 움직이지 못하므로 갈비뼈와 가로막의 움직임으로 호흡운동이 일어나요.'),
+M('movement','들숨이 일어날 때 갈비뼈의 움직임으로 옳은 것은?',['내려간다','올라간다','움직이지 않는다','좌우로 벌어진다'],1,'들숨이 일어날 때 갈비뼈는 올라가요.'),
+M('movement','들숨이 일어날 때 가로막의 움직임으로 옳은 것은?',['올라간다','제자리에 머문다','내려간다','좌우로 움직인다'],2,'들숨이 일어날 때 가로막은 내려가요.'),
+M('movement','날숨이 일어날 때 갈비뼈와 가로막의 움직임으로 옳은 것은?',['갈비뼈 올라감, 가로막 내려감','갈비뼈와 가로막 모두 내려감','갈비뼈와 가로막 모두 올라감','갈비뼈 내려감, 가로막 올라감'],3,'날숨이 일어날 때는 갈비뼈가 내려가고 가로막이 올라가요.'),
+M('movement','들숨이 일어날 때 흉강의 부피 변화로 옳은 것은?',['커진다','작아진다','변화 없다','먼저 작아졌다가 커진다'],0,'들숨이 일어날 때 흉강의 부피는 커져요.'),
+M('movement','들숨이 일어날 때 흉강의 압력 변화로 옳은 것은?',['높아진다','낮아진다','변화 없다','일정하게 유지된다'],1,'들숨이 일어날 때 흉강의 부피가 커지면서 압력은 낮아져요.'),
+M('movement','기체의 부피와 압력의 관계를 나타내는 법칙은?',['관성 법칙','작용 반작용 법칙','보일 법칙','질량 보존 법칙'],2,'기체의 부피는 압력에 반비례하는데, 이를 보일 법칙이라고 해요.'),
+M('movement','보일 법칙에 따르면 기체의 부피와 압력의 관계는?',['부피와 압력은 비례한다','부피와 압력은 관계가 없다','부피가 커지면 압력도 커진다','부피는 압력에 반비례한다'],3,'기체의 부피는 압력에 반비례해요.'),
+M('movement','들숨이 일어날 때 폐 내부의 압력 변화로 옳은 것은?',['낮아진다','높아진다','변화 없다','대기압과 같아진 뒤 유지된다'],0,'흉강의 부피가 커지면 폐의 부피도 커지고 폐 내부 압력은 낮아져요.'),
+M('movement','공기는 압력이 어떤 곳에서 어떤 곳으로 이동하는가?',['낮은 곳에서 높은 곳으로','높은 곳에서 낮은 곳으로','항상 일정한 방향으로','이동하지 않는다'],1,'공기는 압력이 높은 곳에서 낮은 곳으로 이동해요.'),
+M('movement','들숨이 일어날 때 공기가 몸 밖에서 폐 안으로 들어오는 까닭은?',['폐 내부 압력이 대기압과 같아서','가로막이 공기를 빨아들여서','폐 내부 압력이 대기압보다 낮아져서','갈비뼈가 공기를 밀어 넣어서'],2,'폐 내부 압력이 대기압보다 낮아지므로 공기가 폐 안으로 들어와요.'),
+M('movement','날숨이 일어날 때 공기가 폐 안에서 몸 밖으로 나가는 까닭은?',['폐 내부 압력이 대기압과 같아져서','가로막이 공기를 밀어내서','흉강의 부피가 커져서','폐 내부 압력이 대기압보다 높아져서'],3,'날숨이 일어날 때 폐 내부 압력이 대기압보다 높아지므로 공기가 몸 밖으로 나가요.'),
+M('movement','날숨이 일어날 때 흉강과 폐의 부피 변화로 옳은 것은?',['둘 다 작아진다','둘 다 커진다','흉강만 작아진다','폐만 커진다'],0,'날숨이 일어날 때 흉강과 폐의 부피는 모두 작아져요.'),
+M('movement','날숨이 일어날 때 흉강과 폐 내부의 압력 변화로 옳은 것은?',['둘 다 낮아진다','둘 다 높아진다','흉강만 높아진다','폐만 낮아진다'],1,'날숨이 일어날 때 흉강과 폐 내부의 압력은 모두 높아져요.'),
+M('movement','들숨이 일어나는 과정 중 가장 먼저 일어나는 일은?',['폐 내부 압력이 낮아진다','공기가 폐 안으로 들어온다','갈비뼈가 올라가고 가로막이 내려간다','폐의 부피가 커진다'],2,'먼저 갈비뼈가 올라가고 가로막이 내려가면서 흉강의 부피가 커지기 시작해요.'),
+M('movement','호흡운동이 일어날 때 갈비뼈와 가로막의 움직임에 대한 설명으로 옳지 않은 것은?',['들숨 때 갈비뼈가 올라간다','들숨 때 가로막이 내려간다','날숨 때 갈비뼈가 내려간다','날숨 때 가로막이 내려간다'],3,'날숨 때는 가로막이 올라가요. 가로막이 내려가는 것은 들숨 때예요.'),
+
+// ===== 기체 교환 =====
+M('exchange','폐와 조직 세포에서 기체 교환이 일어나는 근본 원리는?',['기체 농도 차이에 따른 확산','혈액 온도 차이에 의한 이동','심장의 펌프 작용에 의한 이동','혈관벽 두께 차이에 의한 이동'],0,'기체는 농도가 높은 곳에서 낮은 곳으로 확산하며 교환돼요.'),
+M('exchange','어떤 물질이 농도가 높은 쪽에서 낮은 쪽으로 퍼져 나가는 현상을 무엇이라 하는가?',['삼투','확산','여과','흡수'],1,'확산은 물질이 농도가 높은 쪽에서 낮은 쪽으로 퍼져 나가는 현상이에요.'),
+M('exchange','폐(허파꽈리)에서 산소가 이동하는 방향으로 옳은 것은?',['모세혈관 → 허파꽈리','이동하지 않는다','허파꽈리 → 모세혈관','조직 세포 → 허파꽈리'],2,'허파꽈리의 산소 농도가 모세혈관보다 높아 산소는 허파꽈리에서 모세혈관으로 이동해요.'),
+M('exchange','폐(허파꽈리)에서 이산화 탄소가 이동하는 방향으로 옳은 것은?',['허파꽈리 → 조직 세포','이동하지 않는다','허파꽈리 → 모세혈관','모세혈관 → 허파꽈리'],3,'모세혈관의 이산화 탄소 농도가 허파꽈리보다 높아 이산화 탄소는 모세혈관에서 허파꽈리로 이동해요.'),
+M('exchange','조직 세포에서 산소가 이동하는 방향으로 옳은 것은?',['모세혈관 → 조직 세포','조직 세포 → 모세혈관','이동하지 않는다','조직 세포 → 허파꽈리'],0,'조직 세포는 산소 농도가 낮아 모세혈관의 산소가 조직 세포로 이동해요.'),
+M('exchange','조직 세포에서 이산화 탄소가 이동하는 방향으로 옳은 것은?',['모세혈관 → 조직 세포','조직 세포 → 모세혈관','이동하지 않는다','허파꽈리 → 조직 세포'],1,'조직 세포는 이산화 탄소 농도가 높아 조직 세포의 이산화 탄소가 모세혈관으로 이동해요.'),
+M('exchange','폐에서 기체 교환이 일어난 결과, 혈액은 어떻게 변하는가?',['동맥혈에서 정맥혈로 바뀐다','변화가 없다','정맥혈에서 동맥혈로 바뀐다','혈액의 양이 늘어난다'],2,'폐에서는 혈액에 산소가 많아지고 이산화 탄소가 적어져 정맥혈이 동맥혈로 바뀌어요.'),
+M('exchange','조직 세포에서 기체 교환이 일어난 결과, 혈액은 어떻게 변하는가?',['정맥혈에서 동맥혈로 바뀐다','변화가 없다','혈액의 양이 줄어든다','동맥혈에서 정맥혈로 바뀐다'],3,'조직 세포에서는 혈액에 산소가 적어지고 이산화 탄소가 많아져 동맥혈이 정맥혈로 바뀌어요.'),
+M('exchange','폐에서의 기체 교환이 일어나는 장소로 옳은 것은?',['허파꽈리와 모세혈관 사이','숨관과 코 사이 공간','심장의 심방과 심실 사이','조직 세포와 근육 사이'],0,'폐에서의 기체 교환은 허파꽈리와 이를 둘러싼 모세혈관 사이에서 일어나요.'),
+M('exchange','조직 세포에서의 기체 교환이 일어나는 장소로 옳은 것은?',['허파꽈리와 숨관 사이','모세혈관과 조직 세포 사이','코와 숨관가지 사이','심장의 판막 사이 공간'],1,'조직 세포에서의 기체 교환은 온몸의 모세혈관과 조직 세포 사이에서 일어나요.'),
+M('exchange','허파꽈리의 산소 농도와 이를 둘러싼 모세혈관의 산소 농도를 비교하면?',['모세혈관이 더 높다','농도가 같다','허파꽈리가 더 높다','비교할 수 없다'],2,'허파꽈리는 모세혈관보다 산소 농도가 높아요.'),
+M('exchange','허파꽈리와 이를 둘러싼 모세혈관의 이산화 탄소 농도를 비교하면?',['허파꽈리가 더 높다','농도가 같다','비교할 수 없다','모세혈관이 더 높다'],3,'모세혈관은 허파꽈리보다 이산화 탄소 농도가 높아요.'),
+M('exchange','온몸의 모세혈관과 조직 세포의 산소 농도를 비교하면?',['모세혈관이 더 높다','조직 세포가 더 높다','농도가 같다','둘 다 산소가 없다'],0,'모세혈관은 조직 세포보다 산소 농도가 높아요.'),
+M('exchange','온몸의 모세혈관과 조직 세포의 이산화 탄소 농도를 비교하면?',['모세혈관이 더 높다','조직 세포가 더 높다','농도가 같다','둘 다 이산화 탄소가 없다'],1,'조직 세포는 모세혈관보다 이산화 탄소 농도가 높아요.'),
+M('exchange','폐와 조직 세포에서의 기체 교환을 통해 공기 중의 산소는 결국 어디로 이동하는가?',['다시 허파꽈리로','숨관으로','조직 세포로','가로막으로'],2,'공기 중의 산소는 폐와 조직 세포에서의 기체 교환을 거쳐 조직 세포로 이동해요.'),
+M('exchange','조직 세포에서 발생한 이산화 탄소는 최종적으로 어디로 나가는가?',['가로막으로','다시 조직 세포로','심장으로','몸 밖으로'],3,'조직 세포에서 발생한 이산화 탄소는 혈액과 폐를 거쳐 몸 밖으로 나가요.'),
+
+// ===== 호흡운동 모형 탐구 =====
+M('experiment','호흡운동 모형 실험에서 작은 고무풍선이 나타내는 것은?',['폐','가로막','갈비뼈','흉강'],0,'작은 고무풍선은 폐를 나타내요.'),
+M('experiment','호흡운동 모형 실험에서 큰 고무 막이 나타내는 것은?',['갈비뼈','가로막','숨관','허파꽈리'],1,'큰 고무 막은 가로막을 나타내요.'),
+M('experiment','호흡운동 모형 실험에서 플라스틱 컵 속 빈 공간이 나타내는 것은?',['숨관','허파꽈리','흉강','코'],2,'컵 속의 빈 공간은 흉강을 나타내요.'),
+M('experiment','호흡운동 모형 실험에서 빨대가 나타내는 사람 몸의 부위는?',['가로막','갈비뼈','허파꽈리','숨관과 숨관가지'],3,'빨대는 숨관과 숨관가지를 나타내요.'),
+M('experiment','호흡운동 모형에서 고무 막을 아래로 잡아당기면 작은 고무풍선은 어떻게 되는가?',['부푼다','줄어든다','변화가 없다','터진다'],0,'고무 막을 잡아당기면 컵 속 부피가 커지고 압력이 낮아져 고무풍선이 부풀어요.'),
+M('experiment','호흡운동 모형에서 고무 막을 밀어 올리면 작은 고무풍선은 어떻게 되는가?',['부푼다','줄어든다','터진다','2배로 커진다'],1,'고무 막을 밀어 올리면 컵 속 부피가 작아지고 압력이 높아져 고무풍선이 줄어들어요.'),
+M('experiment','고무 막을 잡아당길 때 컵 속의 부피와 압력 변화로 옳은 것은?',['부피 감소, 압력 증가','부피와 압력 모두 변화 없음','부피 증가, 압력 감소','부피 증가, 압력 증가'],2,'고무 막을 잡아당기면 컵 속 부피는 증가하고 압력은 감소해요.'),
+M('experiment','고무 막을 밀어 올릴 때 컵 속의 부피와 압력 변화로 옳은 것은?',['부피 증가, 압력 감소','부피와 압력 모두 변화 없음','부피 감소, 압력 감소','부피 감소, 압력 증가'],3,'고무 막을 밀어 올리면 컵 속 부피는 감소하고 압력은 증가해요.'),
+M('experiment','고무 막을 잡아당기는 것은 사람의 호흡운동에서 무엇에 해당하는가?',['들숨','날숨','기침','재채기'],0,'고무 막을 잡아당기는 것은 들숨에 해당해요.'),
+M('experiment','고무 막을 밀어 올리는 것은 사람의 호흡운동에서 무엇에 해당하는가?',['들숨','날숨','숨 참기','하품'],1,'고무 막을 밀어 올리는 것은 날숨에 해당해요.'),
+M('experiment','호흡운동 모형과 사람 몸의 차이점으로 옳은 것은?',['모형과 사람 몸의 원리는 다르다','사람 몸은 고무 막만으로 호흡한다','모형은 고무 막의 움직임만으로 공기가 드나든다','모형에는 가로막이 없다'],2,'호흡운동 모형은 고무 막의 움직임만으로 공기가 드나들지만, 사람의 몸에서는 가로막과 갈비뼈가 함께 움직여요.'),
+M('experiment','페트병을 이용한 호흡운동 모형 실험에서 쇠고리가 나타내는 것은?',['가로막','허파꽈리','숨관','갈비뼈'],3,'쇠고리는 갈비뼈를 나타내요.'),
+M('experiment','페트병 모형 실험에서 쇠고리를 위로 올리면 고무풍선은 어떻게 되는가?',['커진다','작아진다','변화 없다','터진다'],0,'쇠고리를 올리면 페트병 속 부피가 커지고 압력이 낮아져 고무풍선이 커져요.'),
+M('experiment','페트병 모형 실험에서 쇠고리를 아래로 내리면 고무풍선은 어떻게 되는가?',['커진다','작아진다','2배로 부푼다','색이 변한다'],1,'쇠고리를 내리면 페트병 속 부피가 작아지고 압력이 높아져 고무풍선이 작아져요.'),
+M('experiment','페트병 모형 실험에서 쇠고리를 올리는 것은 사람의 호흡운동에서 무엇에 해당하는가?',['날숨','기침','들숨','재채기'],2,'쇠고리를 올리는 것은 갈비뼈가 올라가는 들숨에 해당해요.'),
+M('experiment','고무풍선이 부풀 때, 공기가 이동하는 방향으로 옳은 것은?',['고무풍선에서 밖으로','이동하지 않는다','고무풍선 안에서 맴돈다','밖에서 고무풍선 안으로'],3,'고무풍선이 부풀 때는 공기가 밖에서 고무풍선 안으로 들어와요.'),
+];
+QUESTIONS.forEach((q,i)=>{q.id='q'+i;});
+
+/* ============ STATE / STORAGE ============ */
+const APP_KEY='resp80'; // 이 앱 전용 키 (다른 퀴즈 앱과 데이터가 섞이지 않도록)
+const TEACHER_PW='0000';
+/* 구글 시트 연동: Apps Script를 웹앱으로 배포한 뒤 나온 URL을 여기에 붙여넣으세요.
+   (배포 방법은 대화 답변의 안내를 참고하세요. 비워두면 구글 시트 전송/조회 기능은 조용히 꺼져 있어요.) */
+const GAS_URL='https://script.google.com/macros/s/AKfycbwxa72iLkQ8-Tn533dWu3uz2O62maLQMWtEz8gbTsUuCOknZhVEJ05y1eG7aqSCORNTMg/exec';
+let state={};
+function newSession(){
+  return {name:'',cats:[],order:'seq',mode:'full',wrongScope:'all',started:false,list:[],idx:0,correct:0,
+    wrong:[],answers:{},startTime:null,timeLeft:60,timerId:null,missionTimeLeft:300,missionTimerId:null,
+    setSize:20,setIdx:0,combo:0,maxCombo:0,answeredAny:false,giveUp:false,lockUntil:0,lockTimerId:null,selected:null,submitted:false,gsSessionId:null};
+}
+state=newSession();
+
+function uid(){return 'u_'+Math.random().toString(36).slice(2,10);}
+function safeName(n){return (n||'').trim().replace(/[\s\/\\'"]+/g,'');}
+function wait(ms){return new Promise(r=>setTimeout(r,ms));}
+/* 중요: 저장을 불러오는 데 실패했을 때 이를 "빈 데이터"와 구분하지 못하면,
+   실패를 빈 값으로 착각해 학생의 기존 오답·포인트 기록을 빈 값으로 덮어써서
+   지워버리는 심각한 문제가 생겨요. 그래서 모든 읽기/쓰기는 성공 여부(failed/ok)를
+   명시적으로 함께 돌려주고, 호출하는 쪽에서 실패 시 절대 덮어쓰지 않도록 해요.
+   또한 이 호출은 자주 일어나지 않으므로 속도보다 안정성을 우선해 재시도를 넉넉히 해요. */
+/* 중요: 저장 API는 '한 번도 저장된 적 없는 키'를 읽으려 하면 값이 아니라 예외(에러)를 던져요.
+   즉, 새 학생의 첫 시험이나 이 앱의 첫 시험 기록처럼 지극히 정상적인 상황에서도 매번 예외가
+   발생해요. 예전 코드는 이 '당연한 예외'를 '진짜 저장 실패'와 똑같이 취급해서 5번씩 쓸데없이
+   재시도하며 몇 초를 허비하고, 결국 실패로 판정해 저장 자체를 막아버렸어요(채점이 느려지고
+   오답이 저장되지 않은 근본 원인). 그래서 읽기(get)는 몇 번만 가볍게 재시도하고, 그래도 안 되면
+   '아직 데이터가 없다'로 간주해 항상 사용 가능한 값을 즉시 돌려줘요. 실제로 저장이 잘 됐는지는
+   쓰기(set)의 반환값으로만 판단해요(set은 실패 시 예외 대신 falsy 값을 돌려주도록 문서화돼 있어요). */
+/* 중요: 이 앱은 Netlify 등 일반 정적 호스팅에 올라가므로 Claude 아티팩트 전용 API인
+   window.storage는 사용할 수 없어요(그 환경 밖에서는 존재하지 않음). 그래서 실제 브라우저의
+   localStorage를 사용해요. localStorage는 "이 브라우저·이 기기"에만 저장되는 로컬 저장소라서
+   기기를 바꾸면 기록이 보이지 않을 수 있어요 — 그래서 구글 시트 연동(전송)을 함께 써서
+   여러 기기의 기록을 한 곳(구글 시트)에서도 모을 수 있게 했어요. */
+async function sget(key){
+  try{
+    const raw=localStorage.getItem(key);
+    return {value: raw?JSON.parse(raw):null, failed:false};
+  }catch(e){
+    return {value:null, failed:false}; // 시크릿 모드 등에서 접근 불가 → 빈 값으로 간주하고 진행
+  }
+}
+async function sset(key,val){
+  try{
+    localStorage.setItem(key,JSON.stringify(val));
+    return {ok:true};
+  }catch(e){
+    return {ok:false}; // 용량 초과, 시크릿 모드 등
+  }
+}
+/* 학생별/전체 데이터를 각각 하나의 키로 묶어 저장 왕복 횟수를 최소화.
+   반환값은 {data, failed} 형태예요. failed가 true이면 data는 신뢰할 수 없는
+   기본값이므로, 호출하는 쪽에서 이 값으로 저장(덮어쓰기)하면 안 돼요. */
+async function getStudentData(name){
+  const {value:d, failed}=await sget('student_'+APP_KEY+'_'+safeName(name));
+  const data=d||{profile:{points:0,level:1,coupons:0},wrong:[],examLogs:[]};
+  if(!data.examLogs) data.examLogs=[];
+  if(!data.wrong) data.wrong=[];
+  if(!data.profile) data.profile={points:0,level:1,coupons:0};
+  return {data, failed};
+}
+const MAX_EXAM_LOGS=40; // 학생별 시험 기록(오답노트)은 최근 40회까지 보관해요.
+async function setStudentData(name,data){
+  const r=await sset('student_'+APP_KEY+'_'+safeName(name),data);
+  return r.ok;
+}
+async function getExamData(){
+  const {value:d, failed}=await sget('examdata_'+APP_KEY);
+  return {data: d||{results:[],hof:[]}, failed};
+}
+async function setExamData(data){
+  const r=await sset('examdata_'+APP_KEY,data);
+  return r.ok;
+}
+
+/* ============ 구글 시트 실시간 전송 ============
+   - 문제를 하나 제출할 때마다(전체를 다 풀지 않아도) 지금까지의 누적 상태를
+     구글 시트로 보내요. 같은 sessionId로 여러 번 보내면 Apps Script 쪽에서
+     "새 줄 추가"가 아니라 "그 줄을 덮어쓰기(갱신)"하도록 설계되어 있어서,
+     시트에는 이 학생의 이번 시험 회차당 딱 한 줄만 남고 계속 최신 상태로 갱신돼요.
+   - Apps Script 웹앱은 브라우저의 사전 확인(preflight) 요청을 처리하지 못해서,
+     반드시 mode:'no-cors' + Content-Type: text/plain 조합으로 보내야 조용히
+     막히지 않고 전송돼요. 응답 내용은 읽을 수 없지만(브라우저 제한), 전송 자체는 돼요. */
+function sendProgressToSheet(){
+  if(!GAS_URL) return; // 연동 주소가 비어 있으면 조용히 건너뜀
+  try{
+    const answeredIds=Object.keys(state.answers);
+    const detail=answeredIds.map(id=>{
+      const q=questionById(id);
+      const wrongEntry=state.wrong.find(w=>w.id===id);
+      return {
+        id,
+        q:q?q.q:'',
+        your: wrongEntry ? wrongEntry.your : (q?(q.t==='mcq'?q.o[q.a]:q.a):''),
+        ok: !!state.answers[id]
+      };
+    });
+    const payload={
+      sessionId: state.gsSessionId,
+      name: state.name,
+      ts: Date.now(),
+      mode: state.mode,
+      cats: state.cats.length?state.cats.map(catName).join(','):'전체',
+      answered: answeredIds.length,
+      total: state.list.length,
+      correct: state.correct,
+      score: answeredIds.length>0?Math.round(state.correct/answeredIds.length*100):0,
+      wrongIds: state.wrong.map(w=>w.id),
+      detail
+    };
+    fetch(GAS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(payload)});
+  }catch(e){ /* 시트 전송 실패가 퀴즈 진행 자체를 막으면 안 되므로 조용히 무시 */ }
+}
+
+/* ============ HELPERS ============ */
+function shuffle(arr){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function pickByCats(cats){
+  if(!cats||cats.length===0) return QUESTIONS.slice();
+  return QUESTIONS.filter(q=>cats.includes(q.c));
+}
+function catName(id){const c=CATS.find(x=>x.id===id);return c?c.name:id;}
+function questionById(id){return QUESTIONS.find(q=>q.id===id);}
+/* 저장에는 {id, your}만 있으므로, 화면에 보여줄 때 QUESTIONS에서 문제/정답/해설을 다시 찾아 채워요. */
+function wrongDisplayInfo(w){
+  const q=questionById(w.id);
+  if(!q) return {q:'(삭제되었거나 찾을 수 없는 문제예요)',your:w.your||'-',correct:'-',explain:'',cat:''};
+  return {q:q.q, your:(w.your===null||w.your===undefined||w.your==='')?'(제출 안함)':w.your,
+    correct:q.t==='mcq'?q.o[q.a]:q.a, explain:q.e, cat:q.c};
+}
+function fmtDate(ts){const d=new Date(ts);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function fmtDT(ts){const d=new Date(ts);return fmtDate(ts)+' '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');}
+function monthKey(ts){const d=new Date(ts);return d.getFullYear()+'년 '+(d.getMonth()+1)+'월';}
+
+/* ============ MODAL (alert/confirm이 샌드박스에서 막혀 있어 대체) ============ */
+function showAlert(msg){
+  return new Promise(resolve=>{
+    const ov=document.getElementById('modalOverlay');
+    document.getElementById('modalMsg').textContent=msg;
+    document.getElementById('modalBtns').innerHTML=`<button class="btn btn-primary" id="modalOkBtn">확인</button>`;
+    ov.classList.remove('hidden');
+    document.getElementById('modalOkBtn').onclick=()=>{ov.classList.add('hidden');resolve(true);};
+  });
+}
+function showConfirm(msg){
+  return new Promise(resolve=>{
+    const ov=document.getElementById('modalOverlay');
+    document.getElementById('modalMsg').textContent=msg;
+    document.getElementById('modalBtns').innerHTML=`<button class="btn btn-ghost" id="modalCancelBtn">취소</button><button class="btn btn-primary" id="modalOkBtn">확인</button>`;
+    ov.classList.remove('hidden');
+    document.getElementById('modalOkBtn').onclick=()=>{ov.classList.add('hidden');resolve(true);};
+    document.getElementById('modalCancelBtn').onclick=()=>{ov.classList.add('hidden');resolve(false);};
+  });
+}
+
+/* ============ RENDER ROOT ============ */
+let screen='setup';
+function render(){
+  const app=document.getElementById('app');
+  if(screen==='setup') app.innerHTML=renderSetup();
+  else if(screen==='quiz') app.innerHTML=renderQuiz();
+  else if(screen==='setresult') app.innerHTML=renderSetResult();
+  else if(screen==='result') app.innerHTML=renderResult();
+  else if(screen==='wrongnote') app.innerHTML=renderWrongNote();
+  else if(screen==='tlogin') app.innerHTML=renderTeacherLogin();
+  else if(screen==='tdash') app.innerHTML=`<div class="card"><p>불러오는 중...</p></div>`;
+  bindEvents();
+}
+
+/* ============ SETUP SCREEN ============ */
+function renderSetup(){
+  return `
+  <div class="hero">
+    <div class="eyebrow">중2 과학 · 호흡</div>
+    <h1>호흡 탐험대</h1>
+    <p>코에서 허파꽈리까지, 호흡계 ${QUESTIONS.length}제로 완전정복!</p>
+  </div>
+  <div class="card">
+    <label class="field-label">이름을 알려줄래?</label>
+    <input type="text" id="nameInput" placeholder="이름을 입력하세요" value="${state.name}">
+
+    <label class="field-label">범위를 골라볼까? <span style="font-weight:400;color:var(--sub);font-size:12px;">(아무것도 안 고르면 전체!)</span></label>
+    <div class="chip-grid">
+      ${CATS.map(c=>{
+        const cnt=QUESTIONS.filter(q=>q.c===c.id).length;
+        const active=state.cats.includes(c.id)?'active':'';
+        return `<div class="chip ${active}" data-cat="${c.id}"><b>${c.icon} ${c.name}</b><small>${cnt}문제</small></div>`;
+      }).join('')}
+    </div>
+
+    <div class="toggle-row">
+      <input type="checkbox" id="shuffleChk" ${state.order==='shuffle'?'checked':''}>
+      <label for="shuffleChk">문제 순서 섞기</label>
+    </div>
+
+    <label class="field-label">학습 모드를 골라볼까?</label>
+    <div class="mode-card ${state.mode==='full'?'active':''}" data-mode="full">
+      <div class="mt">📖 전체문제 모드</div><div class="md">고른 범위를 처음부터 끝까지 쭉 이어서 풀어요</div>
+    </div>
+    <div class="mode-card ${state.mode==='focus'?'active':''}" data-mode="focus">
+      <div class="mt">🎯 집중력 향상 모드</div><div class="md">20문제씩 세트로 나눠서 풀어요 (세트마다 쉬어가요)</div>
+    </div>
+    <div class="mode-card ${state.mode==='deep'?'active':''}" data-mode="deep">
+      <div class="mt">🔍 꼼꼼 정독 모드</div><div class="md">문제가 나오면 5초 동안은 보기를 누를 수 없어요</div>
+    </div>
+    <div class="mode-card ${state.mode==='wrong'?'active':''}" data-mode="wrong">
+      <div class="mt">📝 오답 모드</div><div class="md">틀렸던 문제만 섞어서 다시 풀며 확실히 외워요</div>
+      ${state.mode==='wrong'?`
+      <div class="scope-row" id="scopeRow">
+        <div class="scope-chip ${state.wrongScope==='recent'?'active':''}" data-scope="recent">🕐 최근 시험 오답만</div>
+        <div class="scope-chip ${state.wrongScope==='all'?'active':''}" data-scope="all">📚 여태까지 누적 오답 전체</div>
+      </div>`:''}
+    </div>
+    <div class="small-note">⏱️ 문제당 제한시간 60초가 함께 적용돼요 (5분 미션 제외)</div>
+
+    <div class="mission" id="missionBtn">⏱️ 5분 미션 (바로 8문제 도전!)</div>
+
+    <button class="btn btn-primary" id="startBtn" style="margin-top:6px;">시작하기</button>
+    <div class="row2">
+      <button class="btn btn-ghost" id="couponBtn">🍦 내 쿠폰함</button>
+      <button class="btn btn-ghost" id="hofBtn">🏆 명예의 전당</button>
+    </div>
+    <button class="btn btn-outline" id="wrongHistoryBtn" style="margin-top:10px;">📚 내 오답노트 모아보기 (PDF·인쇄)</button>
+    <button class="btn btn-outline" id="teacherBtn" style="margin-top:10px;">📋 강사용 결과 보기</button>
+    <div class="giveup" id="resetMyDataBtn" style="margin-top:14px;">🧹 내 오답노트·포인트 초기화</div>
+    <div class="giveup" id="storageTestBtn" style="margin-top:6px;">🔧 저장 기능 테스트 (오답모드가 안 될 때 눌러보세요)</div>
+  </div>
+  <div class="footer-copy">© 호흡 탐험대 · 중2 과학 호흡계 ${QUESTIONS.length}제 · build 2026-08-20-v1</div>
+  `;
+}
+
+function startQuiz(mode){
+  const nameEl=document.getElementById('nameInput');
+  state.name=(nameEl?nameEl.value:state.name).trim();
+  if(!state.name){showAlert('이름을 입력해 주세요!');return;}
+  if(!safeName(state.name)){showAlert('이름에 특수문자나 공백만 있으면 기록이 저장되지 않아요. 다른 이름으로 입력해 주세요!');return;}
+  state.mode=mode||state.mode;
+  const pool=pickByCats(state.cats);
+  let list;
+  if(state.mode==='wrong'){
+    loadWrongPoolAndStart();
+    return;
+  } else if(state.mode==='mission'){
+    list=shuffle(pool).slice(0,8);
+  } else {
+    list=state.order==='shuffle'?shuffle(pool):pool.slice();
+  }
+  beginList(list);
+}
+
+/* 오답 모드: 이 학생의 실제 오답 기록만 정확히 불러와서 사용 (중복 채우기 없음 → 엉뚱한 문제가 섞이지 않음)
+   - '최근 시험 오답만': 가장 최근에 제출한 시험(examLogs의 마지막 기록)에서 틀린 문제만
+   - '전체 누적 오답': 지금까지 본 모든 시험 기록(examLogs)과 현재 미해결 오답(sd.wrong)을 합쳐서
+     한 번이라도 틀렸던(그리고 아직 확실히 정리 안 된) 문제를 모두 포함 → 로그인/기기를 바꿔도,
+     시간이 지나도 항상 똑같이 반영돼요. */
+async function loadWrongPoolAndStart(){
+  const {data:sd, failed}=await getStudentData(state.name);
+  if(failed){
+    await showAlert('오답 기록을 불러오지 못했어요. 인터넷 연결을 확인한 뒤 다시 시도해 주세요.');
+    return;
+  }
+  let wn=[];
+  if(state.wrongScope==='recent'){
+    const logs=sd.examLogs||[];
+    if(logs.length===0){showAlert('아직 제출한 시험 기록이 없어요! 먼저 다른 모드로 시험을 한 번 봐 주세요.');return;}
+    const last=logs[logs.length-1];
+    wn=last.wrongList||[];
+    if(wn.length===0){showAlert('가장 최근 시험에서는 틀린 문제가 없었어요! 완벽했네요 🎉');return;}
+  } else {
+    // sd.wrong(현재 미해결 오답) + 모든 시험 기록의 오답을 합쳐 한 번이라도 틀렸던 문제를 폭넓게 포함
+    const fromLogs=[];
+    (sd.examLogs||[]).forEach(l=>{(l.wrongList||[]).forEach(w=>fromLogs.push(w));});
+    wn=[...(sd.wrong||[]), ...fromLogs];
+    if(wn.length===0){
+      if((sd.examLogs||[]).length===0){
+        showAlert('아직 본 시험이 없어요! 먼저 다른 모드로 시험을 한 번 봐 주세요.');
+      } else {
+        showAlert('지금까지 틀렸던 문제를 모두 맞혔어요! 완벽해요 🎉');
+      }
+      return;
+    }
+  }
+  const ids=[...new Set(wn.map(w=>w.id))];
+  let list=QUESTIONS.filter(q=>ids.includes(q.id));
+  list=shuffle(list);
+  beginList(list);
+}
+
+function beginList(list){
+  state.list=list;
+  state.idx=0;state.correct=0;state.wrong=[];state.answers={};
+  state.startTime=Date.now();state.combo=0;state.maxCombo=0;state.setIdx=0;
+  state.selected=null;state.submitted=false;state.giveUp=false;
+  state.gsSessionId=uid(); // 구글 시트에 이번 시험 회차를 식별할 고유 ID
+  screen='quiz';
+  render();
+  startTimerForCurrent();
+}
+
+/* ============ QUIZ SCREEN ============ */
+function currentQ(){return state.list[state.idx];}
+
+function renderQuiz(){
+  const q=currentQ();
+  if(!q) return renderResult();
+  const total=state.list.length;
+  const isMission=state.mode==='mission';
+  const timeDisplay=isMission?state.missionTimeLeft:state.timeLeft;
+  const timePct=isMission?Math.max(0,state.missionTimeLeft/300*100):Math.max(0,state.timeLeft/60*100);
+  const submittedInfo=state.submitted?state.lastResult:null;
+  const isLocked=state.mode==='deep' && !state.submitted && Date.now()<state.lockUntil;
+  let choicesHtml='';
+  if(q.t==='mcq'){
+    choicesHtml=q.o.map((opt,i)=>{
+      let cls='choice';
+      if(state.submitted){
+        if(i===q.a) cls+=' correct';
+        else if(i===state.selected) cls+=' wrong';
+      } else if(isLocked){
+        cls+=' locked';
+      } else if(state.selected===i){
+        cls+=' sel';
+      }
+      return `<div class="${cls}" data-idx="${i}">${['①','②','③','④'][i]} ${opt}</div>`;
+    }).join('');
+  } else {
+    choicesHtml=`<input type="text" class="kbdinput ${isLocked?'locked':''}" id="shortInput" placeholder="정답을 입력하세요" ${state.submitted||isLocked?'disabled':''} value="${state.selected||''}">`;
+  }
+  let feedback='';
+  if(state.submitted){
+    const ok=submittedInfo.ok;
+    feedback=`<div class="explain-box ${ok?'right':''}"><b>${ok?'정답이에요! 🎉':'아쉬워요! 다시 확인해볼까요?'}</b>${q.e}</div>`;
+  }
+  return `
+  <div class="card">
+    <div class="tag">${catName(q.c)}</div>
+    <div class="meta-row"><span>${state.idx+1} / ${total}</span><span>맞은 개수 ${state.correct}</span></div>
+    <div class="meta-row"><span style="font-weight:700;color:var(--artery-dark);">${timeDisplay}${isMission?'초 남음(전체)':'초'}</span><span></span></div>
+    <div class="timerbar-outer"><div class="timerbar-inner" style="width:${timePct}%;"></div></div>
+    ${state.mode==='deep' && !state.submitted ? renderLockCountdown(isLocked) : ''}
+    <div class="qtext">Q${state.idx+1}. ${q.q}</div>
+    <div id="choicesWrap">${choicesHtml}</div>
+    ${feedback}
+    ${state.submitted?
+      `<button class="btn btn-primary" id="nextBtn">${state.idx===total-1?'결과 보기':'다음 문제'}</button>`
+      :`<button class="btn btn-primary" id="submitBtn">답안 제출</button>`}
+    <div class="giveup" id="giveupBtn">🚪 그만 풀고 지금까지 점수 낼래요</div>
+  </div>`;
+}
+
+function renderLockCountdown(isLocked){
+  const remain=Math.max(1,Math.ceil((state.lockUntil-Date.now())/1000));
+  if(isLocked){
+    return `<div class="lock-countdown wait" id="lockCountdown"><div class="num">${remain}</div><div>🔒 문제를 꼼꼼히 읽어보세요! (초 후 선택 가능)</div></div>`;
+  }
+  return `<div class="lock-countdown go" id="lockCountdown"><div class="go-emoji">🔓</div><div>이제 보기를 선택할 수 있어요!</div></div>`;
+}
+/* 꼼꼼 정독 모드: 5초 동안 남은 시간을 숫자(5,4,3,2,1)로 문제 위에 크게 실시간으로 보여주고,
+   0초가 되는 순간 선택지 4개의 색이 자동으로 채워지도록 200ms마다 갱신 */
+function updateLockUI(){
+  if(state.mode!=='deep' || state.submitted) return;
+  const el=document.getElementById('lockCountdown');
+  if(!el) return;
+  const remain=Math.max(0,Math.ceil((state.lockUntil-Date.now())/1000));
+  if(remain>0){
+    el.className='lock-countdown wait';
+    el.innerHTML=`<div class="num">${remain}</div><div>🔒 문제를 꼼꼼히 읽어보세요! (초 후 선택 가능)</div>`;
+    document.querySelectorAll('.choice').forEach(c=>c.classList.add('locked'));
+    const si=document.getElementById('shortInput');
+    if(si){si.classList.add('locked');si.disabled=true;}
+  } else {
+    el.className='lock-countdown go';
+    el.innerHTML=`<div class="go-emoji">🔓</div><div>이제 보기를 선택할 수 있어요!</div>`;
+    document.querySelectorAll('.choice').forEach(c=>c.classList.remove('locked'));
+    const si=document.getElementById('shortInput');
+    if(si){si.classList.remove('locked');si.disabled=false;}
+  }
+}
+
+function startTimerForCurrent(){
+  clearInterval(state.timerId);clearInterval(state.missionTimerId);clearInterval(state.lockTimerId);
+  state.timeLeft=60;
+  if(state.mode==='deep'){
+    state.lockUntil=Date.now()+5000;
+    updateLockUI();
+    state.lockTimerId=setInterval(()=>{
+      updateLockUI();
+      if(Date.now()>=state.lockUntil){clearInterval(state.lockTimerId);}
+    },200);
+  }
+  if(state.mode==='mission'){
+    if(!state.missionStarted){
+      state.missionTimeLeft=300;state.missionStarted=true;
+      state.missionTimerId=setInterval(()=>{
+        state.missionTimeLeft--;
+        if(state.missionTimeLeft<=0){clearInterval(state.missionTimerId);finishMissionByTime();return;}
+        const bar=document.querySelector('.timerbar-inner');if(bar)bar.style.width=Math.max(0,state.missionTimeLeft/300*100)+'%';
+        const el=document.querySelector('.meta-row span[style]');if(el)el.textContent=state.missionTimeLeft+'초 남음(전체)';
+      },1000);
+    }
+    return;
+  }
+  state.timerId=setInterval(()=>{
+    state.timeLeft--;
+    if(state.timeLeft<=0){clearInterval(state.timerId);autoSubmitTimeout();return;}
+    const bar=document.querySelector('.timerbar-inner');if(bar)bar.style.width=Math.max(0,state.timeLeft/60*100)+'%';
+    const el=document.querySelector('.meta-row span[style]');if(el)el.textContent=state.timeLeft+'초';
+  },1000);
+}
+
+function finishMissionByTime(){
+  if(!state.submitted){handleSubmit(true);}
+}
+
+function autoSubmitTimeout(){
+  if(!state.submitted){handleSubmit(true);}
+}
+
+function handleSubmit(timeout){
+  clearInterval(state.timerId);
+  const q=currentQ();
+  let ok=false;
+  if(timeout && state.selected==null){
+    ok=false;
+  } else if(q.t==='mcq'){
+    ok=state.selected===q.a;
+  } else {
+    const val=(state.selected||'').toString().trim();
+    ok=val.length>0 && val.replace(/\s/g,'')===q.a.replace(/\s/g,'');
+  }
+  state.submitted=true;
+  state.lastResult={ok};
+  state.answers[q.id]=ok;
+  if(ok){
+    state.correct++;state.combo++;state.maxCombo=Math.max(state.maxCombo,state.combo);
+    if([3,5,10].includes(state.combo)) showCombo(state.combo);
+  } else {
+    state.combo=0;
+    state.wrong.push({id:q.id,q:q.q,your:q.t==='mcq'?(state.selected!=null?q.o[state.selected]:'(제출 안함)'):(state.selected||'(제출 안함)'),correct:q.t==='mcq'?q.o[q.a]:q.a,explain:q.e,cat:q.c});
+  }
+  render();
+  sendProgressToSheet();
+}
+
+function showCombo(n){
+  const el=document.getElementById('comboPop');
+  el.textContent=`🔥 ${n}콤보!`;
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),1200);
+}
+
+function goNext(){
+  state.idx++;
+  state.selected=null;state.submitted=false;
+  if(state.idx>=state.list.length){
+    finishQuiz();
+    return;
+  }
+  if(state.mode==='focus' && state.idx>0 && state.idx%state.setSize===0){
+    screen='setresult';render();return;
+  }
+  render();
+  startTimerForCurrent();
+}
+
+function renderSetResult(){
+  const doneInSet=Math.min(state.idx,state.list.length);
+  return `
+  <div class="card" style="text-align:center;">
+    <h2 class="card-title">🎯 세트 완료!</h2>
+    <p>지금까지 ${doneInSet}문제 중 ${state.correct}문제를 맞혔어요.</p>
+    <button class="btn btn-primary" id="nextSetBtn">다음 세트 시작</button>
+    <div class="giveup" id="giveupSetBtn" style="margin-top:12px;">🚪 그만 풀고 지금까지 점수 낼래요</div>
+  </div>`;
+}
+
+/* ============ RESULT (채점 로직: 저장 왕복을 병렬화하여 속도 개선) ============ */
+function showLoading(msg){
+  const ov=document.getElementById('modalOverlay');
+  document.getElementById('modalMsg').innerHTML=`<span class="spinner"></span><br>${msg}`;
+  document.getElementById('modalBtns').innerHTML='';
+  ov.classList.remove('hidden');
+}
+function hideLoading(){document.getElementById('modalOverlay').classList.add('hidden');}
+let isFinalizing=false;
+function finishQuiz(){
+  if(isFinalizing) return;
+  isFinalizing=true;
+  clearInterval(state.timerId);clearInterval(state.missionTimerId);clearInterval(state.lockTimerId);
+  showLoading('채점하고 있어요...');
+  finalizeAndShowResult(false).finally(()=>{isFinalizing=false;});
+}
+function giveUp(){
+  if(isFinalizing) return;
+  isFinalizing=true;
+  clearInterval(state.timerId);clearInterval(state.missionTimerId);clearInterval(state.lockTimerId);
+  showLoading('채점하고 있어요...');
+  finalizeAndShowResult(true).finally(()=>{isFinalizing=false;});
+}
+/* 시험 결과 저장을 한 번의 시도로 처리. 실패 시 finalizeAndShowResult에서 여러 번 재시도하거나
+   결과 화면의 '저장 다시 시도' 버튼으로 나중에 다시 호출해도 안전하도록(중복 저장 방지) 설계함.
+   examLogId로 이미 저장된 시도인지 확인해서, 재시도해도 포인트가 중복 지급되거나
+   시험 기록이 중복으로 쌓이지 않아요. */
+async function attemptSaveResult(){
+  // 순서대로(하나씩) 호출: 두 storage 호출을 동시에 보내면 일부 환경에서 조용히 실패했어요.
+  // 읽기(get)는 '데이터 없음'과 '실패'를 구분하지 않고 항상 사용 가능한 값을 즉시 돌려주므로
+  // 여기서 더 이상 실패를 검사하지 않아요. 진짜 성공 여부는 마지막의 저장(set) 결과로 판단해요.
+  const {data:sd}=await getStudentData(state.name);
+  const {data:ed}=await getExamData();
+
+  const alreadyLogged=sd.examLogs.some(l=>l.id===state.lastExamLogId);
+  if(!alreadyLogged){
+    // 저장 용량을 줄이기 위해 문제 텍스트/정답/해설은 저장하지 않고 id와 내가 쓴 답만 저장해요.
+    // (표시할 때는 QUESTIONS에서 id로 다시 찾아와요)
+    state.wrong.forEach(w=>{
+      const exist=sd.wrong.find(x=>x.id===w.id);
+      if(!exist) sd.wrong.push({id:w.id,your:w.your});
+      else exist.your=w.your;
+    });
+    Object.keys(state.answers).forEach(qid=>{
+      if(state.answers[qid]===true) sd.wrong=sd.wrong.filter(w=>w.id!==qid);
+    });
+    sd.examLogs.push({
+      id:state.lastExamLogId, ts:Date.now(), mode:state.mode, score:state.finalScore,
+      correct:state.correct, total:state.finalTotal, answered:state.finalAnswered, complete:!state.giveUp,
+      cats:state.cats.length?state.cats.map(catName).join(','):'전체',
+      wrongList:state.wrong.map(w=>({id:w.id,your:w.your}))
+    });
+    if(sd.examLogs.length>MAX_EXAM_LOGS) sd.examLogs=sd.examLogs.slice(sd.examLogs.length-MAX_EXAM_LOGS);
+
+    sd.profile.points=(sd.profile.points||0)+state.pointsGained;
+    let couponGained=0;
+    while(sd.profile.points>=100){sd.profile.points-=100;sd.profile.coupons=(sd.profile.coupons||0)+1;couponGained++;}
+    sd.profile.level=Math.min(5,1+Math.floor(((sd.profile.coupons*100)+sd.profile.points)/100));
+    state.couponGained=couponGained;
+  }
+  state.profile=sd.profile;
+
+  const alreadyInResults=(ed.results||[]).some(r=>r.examLogId===state.lastExamLogId);
+  if(!alreadyInResults){
+    ed.results.push({
+      id:uid(), examLogId:state.lastExamLogId, name:state.name, ts:Date.now(), score:state.finalScore,
+      correct:state.correct, total:state.finalTotal, answered:state.finalAnswered, complete:!state.giveUp,
+      mode:state.mode, cats:state.cats.length?state.cats.map(catName).join(','):'전체'
+    });
+    ed.hof.push({name:state.name,score:state.finalScore,ts:Date.now()});
+    ed.hof.sort((a,b)=>b.score-a.score||b.ts-a.ts);
+    ed.hof=ed.hof.slice(0,50);
+  }
+
+  const savedStudent=await setStudentData(state.name,sd);
+  if(!savedStudent) return false;
+  const savedExam=await setExamData(ed);
+  return savedExam;
+}
+
+async function finalizeAndShowResult(gaveUp){
+  state.giveUp=gaveUp;
+  const answeredCount=Object.keys(state.answers).length;
+  const totalCount=state.list.length;
+  const score100 = answeredCount>0 ? Math.round((state.correct/answeredCount)*100) : 0;
+  state.finalScore=score100;
+  state.finalAnswered=answeredCount;
+  state.finalTotal=totalCount;
+  state.finalPct=totalCount>0?answeredCount/totalCount:0;
+  state.lastExamLogId=uid();
+  state.pointsGained=(answeredCount>=30 && score100>=90)?10:0;
+  state.couponGained=0;
+
+  // 저장 실패가 단발성 네트워크 문제로 시험 결과 자체를 잃어버리지 않도록,
+  // 실패하면 잠시 기다렸다가 전체 과정을 다시 시도해요 (최대 3번).
+  let saved=false;
+  for(let attempt=0; attempt<3 && !saved; attempt++){
+    if(attempt>0) await wait(1500);
+    saved=await attemptSaveResult();
+  }
+  state.saveFailed=!saved;
+  if(!state.profile) state.profile={points:0,level:1,coupons:0};
+  hideLoading();
+  screen='result';
+  render();
+  if(!saved){
+    // 놓치기 쉬운 작은 경고문구 대신, 확인이 필요한 팝업으로 명확히 알려줌
+    await showAlert('⚠️ 이번 시험 결과가 저장되지 못했어요.\n\n오답모드에서 이 시험의 오답을 보려면, 결과 화면의 "🔄 저장 다시 시도" 버튼을 눌러 주세요.');
+  }
+}
+async function retrySaveResult(){
+  showLoading('저장을 다시 시도하고 있어요...');
+  let saved=false;
+  for(let attempt=0; attempt<3 && !saved; attempt++){
+    if(attempt>0) await wait(1500);
+    saved=await attemptSaveResult();
+  }
+  state.saveFailed=!saved;
+  if(!state.profile) state.profile={points:0,level:1,coupons:0};
+  hideLoading();
+  render();
+  await showAlert(saved?'✅ 저장됐어요! 이제 오답모드에서도 이 시험의 오답을 확인할 수 있어요.':'❌ 이번에도 저장에 실패했어요. 인터넷 연결을 확인한 뒤 잠시 후 다시 시도해 주세요.');
+}
+
+function fanfareTier(score,pct){
+  if(pct<0.6){
+    if(score>=90) return {tier:'f90',msg:'잘했어요! 최고예요! 👏 다음엔 모든 문제를 풀면 더 좋아요!'};
+    if(score>=80) return {tier:'f80',msg:'고생했어요! 🌱 다음엔 모든 문제를 풀면 더 좋아요!'};
+    return null;
+  }
+  if(score>=100) return {tier:'f100',msg:'🎉🎉 당신은 과학 지존! 존경합니다! 🎉🎉'};
+  if(score>=95) return {tier:'f95',msg:'너무너무 잘했어요! 당신은 과학 전문가! ⭐'};
+  if(score>=90) return {tier:'f90',msg:'잘했어요! 최고예요! 👏'};
+  if(score>=80) return {tier:'f80',msg:'고생했어요! 🌱'};
+  return null;
+}
+
+function renderResult(){
+  const s=state.finalScore,ans=state.finalAnswered,tot=state.finalTotal,pct=state.finalPct;
+  const fan=fanfareTier(s,pct);
+  const gaugePos=Math.min(100,Math.max(0,s));
+  return `
+  <div class="card" style="text-align:center;">
+    ${state.giveUp?`<div class="warnbox">⚠️ ${tot}문제 중 ${ans}문제만 풀고 제출했어요</div>`:''}
+    ${state.saveFailed?`<div class="warnbox">📡 이번 시험 결과가 아직 저장되지 못했어요. (기존 기록은 안전해요) 아래 버튼으로 다시 시도해 주세요.</div>`:''}
+    <div class="score-big">${s}<span style="font-size:22px;">점</span></div>
+    <div class="score-sub">맞은 개수 ${state.correct} / ${tot} · 정답률 ${ans>0?Math.round(state.correct/ans*100):0}%</div>
+    <div class="gauge"><div class="mark" style="left:${gaugePos}%;"></div></div>
+    <div class="gauge-labels"><span>노력 중</span><span>좋아요</span><span>완벽 마스터</span></div>
+    ${fan?`<div class="fanfare ${fan.tier}">${fan.msg}</div>`:`<div class="fanfare f80">🌱 괜찮아요, 틀린 문제를 다시 보면 금방 늘어요!</div>`}
+    <div class="point-box"><span>이번에 얻은 포인트</span><b>+${state.pointsGained}P</b></div>
+    <div class="level-pill">🌱 Lv.${state.profile.level} ${levelName(state.profile.level)} · 누적 ${state.profile.points}P (쿠폰 ${state.profile.coupons}장)</div>
+    ${state.couponGained>0?`<div class="coupon-toast">🍦 아이스크림 쿠폰이 발급됐어요! (+${state.couponGained}장)</div>`:''}
+    ${state.saveFailed?`<button class="btn btn-primary" id="retrySaveBtn" style="margin-top:14px;">🔄 저장 다시 시도</button>`:''}
+    <button class="btn btn-outline" id="wrongNoteBtn" style="margin-top:16px;">🚫 틀린 문제 오답노트 보기</button>
+    <div class="row2">
+      <button class="btn btn-ghost" id="backHomeBtn">처음으로</button>
+      <button class="btn btn-ghost" id="retryBtn">다시 풀기</button>
+    </div>
+  </div>`;
+}
+function levelName(lv){return ['','새싹 탐구자','숨관 탐험가','허파꽈리 박사','호흡 마스터','인체 마스터'][lv]||'새싹 탐구자';}
+
+function renderWrongNote(){
+  const items=state.wrong;
+  return `
+  <div class="card" id="printArea">
+    <h2 class="card-title">📝 오답노트 · ${state.name}</h2>
+    <div style="font-size:12px;color:var(--sub);margin:-8px 0 12px;">${fmtDT(Date.now())}</div>
+    ${items.length===0?'<p>이번 시험에서 틀린 문제가 없어요! 완벽해요 🎉</p>':
+    items.map((w,i)=>`<div class="wrongitem"><div class="wq">${i+1}. ${w.q}</div>
+      <div class="wu">내가 쓴 답: ${w.your}</div>
+      <div class="wa">정답: ${w.correct}</div>
+      <div style="font-size:12.5px;color:var(--sub);margin-top:4px;">${w.explain}</div></div>`).join('')}
+  </div>
+  <button class="btn btn-primary" id="pdfBtn">📄 오답노트 PDF 만들기 (저장·인쇄)</button>
+  <div class="small-note">💡 이 시험의 오답은 자동으로 저장돼요. '내 오답노트 모아보기'에서 언제든 다시 확인하고 PDF·인쇄할 수 있어요.</div>
+  <button class="btn btn-ghost" id="backResultBtn" style="margin-top:10px;">결과로 돌아가기</button>
+  `;
+}
+
+/* ============ 오답노트 PDF 생성/인쇄 (html2canvas + jsPDF) ============ */
+/* 모바일 대응(중요): window.open()이나 pdf.save()의 자동(프로그램) 클릭 방식은
+   삼성 인터넷 등 일부 모바일 브라우저에서 새 창이 회색으로 멈추거나 다운로드가
+   조용히 실패하는 문제가 있었어요. 그래서 PDF가 준비되면 학생이 '직접 손가락으로
+   누르는' 진짜 링크 버튼을 화면에 보여주는 방식으로 바꿨어요. 이 방식은 브라우저가
+   막을 수 없는 가장 안정적인 방법이에요. */
+/* 글자 크기 문제(중요): 화면(#printArea)을 모바일 좁은 너비 그대로 캡처해서 A4 전체 폭에
+   늘려 넣다 보니 글자가 실제보다 훨씬 크게 인쇄됐어요. 그래서 PDF를 만들 때는 화면에 보이지
+   않는 곳에 '문서에 어울리는 고정 너비(760px) + 작은 글자 크기'의 인쇄용 사본을 따로 만들어
+   그것을 캡처하도록 바꿨어요. */
+let lastPdfBlobUrl=null;
+let lastPdfFilename=null;
+function buildPrintClone(sourceNode){
+  const clone=document.createElement('div');
+  clone.className='pdf-clone';
+  clone.style.cssText='position:fixed;left:-9999px;top:0;width:760px;background:#ffffff;padding:26px 30px;font-family:"Noto Sans KR",sans-serif;box-sizing:border-box;';
+  const style=document.createElement('style');
+  style.textContent=`
+    .pdf-clone .card-title{font-size:18px;margin:0 0 4px;color:#8e2418;font-family:Georgia,'Nanum Myeongjo','Batang',serif;}
+    .pdf-clone .wrongitem{border:1px solid #f0dcdc;border-radius:8px;padding:10px 12px;margin-bottom:8px;}
+    .pdf-clone .wq{font-size:12.5px;font-weight:700;margin-bottom:4px;line-height:1.45;color:#2b2320;}
+    .pdf-clone .wu{font-size:11px;color:#c0392b;}
+    .pdf-clone .wa{font-size:11px;color:#2e8b57;font-weight:700;}
+    .pdf-clone .wrongitem > div:last-child{font-size:10.5px;color:#7a6a63;margin-top:3px;line-height:1.45;}
+  `;
+  clone.appendChild(style);
+  const inner=document.createElement('div');
+  inner.innerHTML=sourceNode.innerHTML;
+  clone.appendChild(inner);
+  document.body.appendChild(clone);
+  return clone;
+}
+async function generateWrongNotePDF(){
+  const node=document.getElementById('printArea');
+  if(!node) return;
+  if(!window.html2canvas || !(window.jspdf&&window.jspdf.jsPDF)){
+    await showAlert('PDF 기능을 불러오는 중이에요. 인터넷 연결을 확인한 뒤 잠시 후 다시 시도해 주세요.');
+    return;
+  }
+  showLoading('PDF를 만들고 있어요...');
+  let clone=null;
+  try{
+    clone=buildPrintClone(node);
+    await new Promise(r=>setTimeout(r,30)); // 레이아웃이 반영될 시간을 살짝 줌
+    const canvas=await html2canvas(clone,{scale:2,backgroundColor:'#ffffff',useCORS:true,windowWidth:800});
+    const imgData=canvas.toDataURL('image/jpeg',0.92);
+    const {jsPDF}=window.jspdf;
+    const pdf=new jsPDF('p','mm','a4');
+    const pdfFilename=`${safeName(state.name)||'학생'}-오답노트-${fmtDate(Date.now())}.pdf`;
+    pdf.setProperties({title:pdfFilename});
+    const pageWidth=pdf.internal.pageSize.getWidth();
+    const pageHeight=pdf.internal.pageSize.getHeight();
+    const imgWidth=pageWidth;
+    const imgHeight=canvas.height*imgWidth/canvas.width;
+    let heightLeft=imgHeight;
+    let position=0;
+    pdf.addImage(imgData,'JPEG',0,position,imgWidth,imgHeight);
+    heightLeft-=pageHeight;
+    while(heightLeft>0){
+      position=heightLeft-imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData,'JPEG',0,position,imgWidth,imgHeight);
+      heightLeft-=pageHeight;
+    }
+    if(lastPdfBlobUrl){ try{URL.revokeObjectURL(lastPdfBlobUrl);}catch(e){} }
+    lastPdfBlobUrl=pdf.output('bloburl');
+    lastPdfFilename=pdfFilename;
+    hideLoading();
+    showPdfReadyModal();
+  }catch(e){
+    hideLoading();
+    await showAlert('PDF를 만드는 중 문제가 발생했어요. 인터넷 연결을 확인하고 다시 시도해 주세요.');
+  } finally {
+    if(clone && clone.parentNode) clone.parentNode.removeChild(clone);
+  }
+}
+function showPdfReadyModal(){
+  const ov=document.getElementById('modalOverlay');
+  document.getElementById('modalMsg').innerHTML='📄 오답노트 PDF가 준비됐어요!<br>아래 버튼을 <b>직접 눌러서</b> 저장하거나 열어 주세요.';
+  const btns=document.getElementById('modalBtns');
+  btns.style.flexDirection='column';
+  btns.innerHTML=`
+    <a href="${lastPdfBlobUrl}" download="${lastPdfFilename}" class="btn btn-primary" style="margin-bottom:8px;">⬇️ PDF 다운로드</a>
+    <a href="${lastPdfBlobUrl}" class="btn btn-outline" style="margin-bottom:8px;">📄 PDF 열어서 보기 · 인쇄</a>
+    <button class="btn btn-ghost" id="modalCloseBtn">닫기</button>
+  `;
+  ov.classList.remove('hidden');
+  document.getElementById('modalCloseBtn').onclick=()=>{ov.classList.add('hidden');btns.style.flexDirection='';};
+}
+
+/* ============ 오답노트 모아보기 (시험별로 누적 저장된 기록을 언제든 확인) ============ */
+async function showWrongHistoryScreen(){
+  const nameEl=document.getElementById('nameInput');
+  if(nameEl) state.name=nameEl.value.trim();
+  if(!state.name){showAlert('먼저 이름을 입력해 주세요!');return;}
+  if(!safeName(state.name)){showAlert('이름에 특수문자나 공백만 있으면 기록을 찾을 수 없어요. 시험 볼 때와 같은 이름을 입력해 주세요!');return;}
+  const app=document.getElementById('app');
+  app.innerHTML=`<div class="card"><p>불러오는 중...</p></div>`;
+  const {data:sd, failed}=await getStudentData(state.name);
+  if(failed){
+    app.innerHTML=`<div class="card"><p>오답노트를 불러오지 못했어요. 인터넷 연결을 확인한 뒤 다시 시도해 주세요.</p><button class="btn btn-ghost" id="backHomeBtn" style="margin-top:14px;">돌아가기</button></div>`;
+    document.getElementById('backHomeBtn').onclick=()=>{screen='setup';render();};
+    return;
+  }
+  const logs=(sd.examLogs||[]).slice().reverse();
+  const totalWrong=logs.reduce((s,l)=>s+((l.wrongList&&l.wrongList.length)||0),0);
+  app.innerHTML=`
+  <div class="card">
+    <h2 class="card-title">📚 ${state.name}님의 오답노트 모아보기</h2>
+    ${logs.length===0?'<p>아직 시험 기록이 없어요. 먼저 시험을 봐 주세요!</p>':`
+    <p style="font-size:13px;color:var(--sub);margin-bottom:14px;">지금까지 본 시험 ${logs.length}회 · 누적 오답 ${totalWrong}개</p>
+    ${totalWrong>0?`<button class="btn btn-primary" id="viewAllWrongBtn" style="margin-bottom:16px;">📖 전체 오답 모아서 보기 (중복 없이, PDF·인쇄)</button>`:''}
+    ${logs.map(l=>`<div class="hist-item" data-logid="${l.id}">
+      <div class="hist-top"><span>${fmtDT(l.ts)}</span><span style="color:${l.score>=90?'var(--good)':'var(--artery-dark)'};">${l.score}점</span></div>
+      <div class="hist-sub">${modeLabel(l.mode)} · ${l.cats} · 틀린 문제 ${(l.wrongList&&l.wrongList.length)||0}개${l.complete?'':' · 중도포기'}</div>
+    </div>`).join('')}
+    `}
+    <button class="btn btn-ghost" id="backHomeBtn" style="margin-top:10px;">돌아가기</button>
+  </div>`;
+  document.getElementById('backHomeBtn').onclick=()=>{screen='setup';render();};
+  const allBtn=document.getElementById('viewAllWrongBtn');
+  if(allBtn){
+    allBtn.onclick=()=>{
+      // 같은 문제가 여러 시험에서 반복해서 틀렸어도 한 번만 보여주고,
+      // 대신 틀린 횟수와 날짜들을 함께 표시 (중복 제거)
+      const map=new Map();
+      logs.slice().reverse().forEach(l=>{ // 오래된 시험부터 순서대로 모음(최근 정보로 갱신되도록)
+        (l.wrongList||[]).forEach(w=>{
+          if(!map.has(w.id)){
+            map.set(w.id,{id:w.id,your:w.your,count:0,dates:[]});
+          }
+          const entry=map.get(w.id);
+          entry.count++;
+          entry.dates.push(fmtDate(l.ts));
+          entry.your=w.your; // 가장 최근에 쓴 답으로 갱신
+        });
+      });
+      const combined=Array.from(map.values()).sort((a,b)=>b.count-a.count||a.id.localeCompare(b.id));
+      showWrongHistoryDetail(`${state.name}님의 전체 누적 오답노트 (중복 제거)`,combined,'combined');
+    };
+  }
+  document.querySelectorAll('.hist-item').forEach(el=>{
+    el.onclick=()=>{
+      const log=logs.find(l=>l.id===el.dataset.logid);
+      if(!log)return;
+      showWrongHistoryDetail(`${state.name}님의 오답노트 · ${fmtDT(log.ts)}`,log.wrongList||[],'single');
+    };
+  });
+}
+function showWrongHistoryDetail(title,items,mode){
+  const app=document.getElementById('app');
+  app.innerHTML=`
+  <div class="card" id="printArea">
+    <h2 class="card-title">📝 ${title}</h2>
+    ${items.length===0?'<p>틀린 문제가 없어요! 완벽해요 🎉</p>':
+    items.map((raw,i)=>{
+      const w=wrongDisplayInfo(raw);
+      return `<div class="wrongitem"><div class="wq">${i+1}. ${w.q}</div>
+      <div class="wu">내가 쓴 답: ${w.your}</div>
+      <div class="wa">정답: ${w.correct}</div>
+      ${mode==='combined'?`<div style="font-size:11px;color:var(--vein-dark);font-weight:700;margin-top:3px;">틀린 횟수: ${raw.count}회 · 날짜: ${raw.dates.join(', ')}</div>`:''}
+      <div style="font-size:12.5px;color:var(--sub);margin-top:4px;">${w.explain}</div></div>`;
+    }).join('')}
+  </div>
+  <button class="btn btn-primary" id="pdfBtn2">📄 오답노트 PDF 만들기 (저장·인쇄)</button>
+  <button class="btn btn-ghost" id="backHistBtn" style="margin-top:10px;">목록으로 돌아가기</button>
+  `;
+  document.getElementById('pdfBtn2').onclick=()=>generateWrongNotePDF();
+  document.getElementById('backHistBtn').onclick=()=>showWrongHistoryScreen();
+}
+
+/* ============ COUPON / HOF (self) ============ */
+async function showCouponScreen(){
+  if(!state.name){showAlert('먼저 이름을 입력해 주세요!');return;}
+  const {data:sd, failed}=await getStudentData(state.name);
+  if(failed){await showAlert('쿠폰함을 불러오지 못했어요. 인터넷 연결을 확인한 뒤 다시 시도해 주세요.');return;}
+  const profile=sd.profile;
+  const app=document.getElementById('app');
+  app.innerHTML=`
+  <div class="card" style="text-align:center;">
+    <h2 class="card-title">🍦 ${state.name}님의 쿠폰함</h2>
+    <div class="level-pill">Lv.${profile.level} ${levelName(profile.level)}</div>
+    <div class="point-box"><span>누적 포인트</span><b>${profile.points}P / 100P</b></div>
+    <div class="gauge"><div class="mark" style="left:${profile.points}%;"></div></div>
+    <div class="coupon-toast" style="margin-top:16px;">보유 아이스크림 쿠폰: ${profile.coupons||0}장</div>
+    <button class="btn btn-ghost" id="backHomeBtn" style="margin-top:14px;">돌아가기</button>
+  </div>`;
+  document.getElementById('backHomeBtn').onclick=()=>{screen='setup';render();};
+}
+
+async function showHOFScreen(){
+  const {data:ed, failed}=await getExamData();
+  const app=document.getElementById('app');
+  if(failed){
+    app.innerHTML=`<div class="card"><p>명예의 전당을 불러오지 못했어요. 인터넷 연결을 확인한 뒤 다시 시도해 주세요.</p><button class="btn btn-ghost" id="backHomeBtn" style="margin-top:14px;">돌아가기</button></div>`;
+    document.getElementById('backHomeBtn').onclick=()=>{screen='setup';render();};
+    return;
+  }
+  const hof=ed.hof||[];
+  const top=hof.slice(0,10);
+  app.innerHTML=`
+  <div class="card">
+    <h2 class="card-title">🏆 명예의 전당</h2>
+    ${top.length===0?'<p>아직 기록이 없어요. 첫 번째 도전자가 되어보세요!</p>':
+      top.map((h,i)=>{
+        const rc=i===0?'gold':i===1?'silver':i===2?'bronze':'';
+        return `<div class="hof-row"><div class="hof-rank ${rc}">${i+1}</div><div style="flex:1;">${h.name}</div><b style="color:var(--artery-dark);">${h.score}점</b></div>`;
+      }).join('')}
+    <button class="btn btn-ghost" id="backHomeBtn" style="margin-top:16px;">돌아가기</button>
+  </div>`;
+  document.getElementById('backHomeBtn').onclick=()=>{screen='setup';render();};
+}
+
+/* ============ TEACHER ============ */
+function renderTeacherLogin(){
+  return `
+  <div class="card" style="text-align:center;">
+    <h2 class="card-title">🔒 강사용 로그인</h2>
+    <input type="text" inputmode="numeric" id="pwInput" placeholder="비밀번호 입력" class="kbdinput">
+    <button class="btn btn-primary" id="pwSubmit">확인</button>
+    <button class="btn btn-ghost" id="pwCancel" style="margin-top:10px;">취소</button>
+  </div>`;
+}
+
+let tdashTab='sheet';
+async function renderTeacherDashAsync(){
+  const app=document.getElementById('app');
+  app.innerHTML=`<div class="card"><p>불러오는 중...</p></div>`;
+  const {data:ed, failed}=await getExamData();
+  if(failed){
+    app.innerHTML=`<div class="card"><h2 class="card-title">강사용 결과 화면</h2><p>시험 기록을 불러오지 못했어요. 인터넷 연결을 확인한 뒤 아래 버튼으로 다시 시도해 주세요.</p><button class="btn btn-outline" id="retryDashBtn" style="margin-top:10px;">🔄 다시 시도</button><button class="btn btn-ghost" id="backHomeBtn" style="margin-top:10px;">돌아가기</button></div>`;
+    document.getElementById('retryDashBtn').onclick=()=>renderTeacherDashAsync();
+    document.getElementById('backHomeBtn').onclick=()=>{screen='setup';render();};
+    return;
+  }
+  const results=ed.results||[];
+  results.sort((a,b)=>b.ts-a.ts);
+  app.innerHTML=teacherDashHtml(results);
+  bindTeacherEvents(results);
+}
+function teacherDashHtml(results){
+  const tabs=[['sheet','🌐 전체 학생 현황(구글시트)'],['all','📋 이 기기 결과'],['student','🔍 이 기기 학생별 조회'],['coupon','🍦 쿠폰 관리'],['excel','📊 엑셀/마감']];
+  return `
+  <div class="card">
+    <h2 class="card-title">강사용 결과 화면</h2>
+    <div class="tabbar">${tabs.map(t=>`<div class="tabbtn ${tdashTab===t[0]?'active':''}" data-tab="${t[0]}">${t[1]}</div>`).join('')}</div>
+    <div class="warnbox">⚠️ "이 기기 결과"는 이 브라우저에만 저장돼요(기기를 바꾸면 안 보여요). 전체 학생의 기록을 한 곳에서 보려면 "🌐 전체 학생 현황(구글시트)" 탭을 이용하세요. 구글 시트 주소를 아는 사람은 누구나 접근할 수 있으니 이름 대신 별명 사용을 권장해요.</div>
+    <div id="tdashBody">${tdashBodyHtml(results)}</div>
+    <button class="btn btn-outline" id="backHomeBtn" style="margin-top:16px;">돌아가기</button>
+  </div>`;
+}
+function tdashBodyHtml(results){
+  if(tdashTab==='sheet') return tabSheetHtml();
+  if(tdashTab==='all') return tabAllHtml(results);
+  if(tdashTab==='student') return tabStudentHtml(results);
+  if(tdashTab==='coupon') return tabCouponHtml();
+  if(tdashTab==='excel') return tabExcelHtml(results);
+  return '';
+}
+/* ============ 구글 시트 · 전체 학생 현황 (검색 없이 자동 표시) ============ */
+function tabSheetHtml(){
+  return `<div id="sheetArea"><p style="color:var(--sub);font-size:13px;">구글 시트에서 불러오는 중...</p></div>`;
+}
+async function loadSheetRoster(){
+  const area=document.getElementById('sheetArea');
+  if(!area) return;
+  if(!GAS_URL){
+    area.innerHTML=`<p style="color:var(--sub);font-size:13px;">⚠️ 아직 구글 시트 연동 주소가 설정되지 않았어요. 코드 상단의 <code>GAS_URL</code> 값에 배포된 Apps Script 웹앱 주소를 붙여넣어 주세요.</p>`;
+    return;
+  }
+  area.innerHTML='<p style="color:var(--sub);font-size:13px;">구글 시트에서 불러오는 중...</p>';
+  try{
+    const res=await fetch(GAS_URL+'?action=all');
+    const json=await res.json();
+    if(!json.ok) throw new Error(json.error||'unknown');
+    const rows=json.rows||[];
+    const byName={};
+    rows.forEach(r=>{
+      if(!r.name) return;
+      if(!byName[r.name]) byName[r.name]={name:r.name,count:0,scoreSum:0,lastTs:0,rows:[]};
+      const g=byName[r.name];
+      g.count++; g.scoreSum+=(r.score||0); g.lastTs=Math.max(g.lastTs,r.ts||0); g.rows.push(r);
+    });
+    const roster=Object.values(byName).sort((a,b)=>b.lastTs-a.lastTs);
+    if(roster.length===0){
+      area.innerHTML='<p>아직 구글 시트에 기록된 학생이 없어요. 학생이 문제를 한 번 풀면 자동으로 나타나요.</p>';
+      return;
+    }
+    area.innerHTML=`
+    <button class="btn btn-outline" id="sheetRefreshBtn" style="margin-bottom:12px;">🔄 새로고침</button>
+    <table><tr><th>이름</th><th>응시횟수</th><th>평균점수</th><th>최근 응시일</th></tr>
+    ${roster.map(g=>`<tr class="sheetStudentRow" data-name="${g.name}" style="cursor:pointer;">
+      <td style="color:var(--artery-dark);font-weight:700;text-decoration:underline;">${g.name}</td>
+      <td>${g.count}</td><td>${Math.round(g.scoreSum/g.count)}점</td><td>${fmtDT(g.lastTs)}</td>
+    </tr>`).join('')}
+    </table>
+    <div id="sheetStudentDetail" style="margin-top:16px;"></div>`;
+    document.getElementById('sheetRefreshBtn').onclick=()=>loadSheetRoster();
+    document.querySelectorAll('.sheetStudentRow').forEach(tr=>{
+      tr.onclick=()=>showSheetStudentDetail(byName[tr.dataset.name]);
+    });
+  }catch(e){
+    area.innerHTML=`<p style="color:#c0392b;">구글 시트를 불러오지 못했어요. Apps Script 배포 주소(GAS_URL)와 배포 설정("액세스 권한: 모든 사용자")을 확인한 뒤 새로고침해 주세요.</p>
+    <button class="btn btn-outline" id="sheetRefreshBtn2" style="margin-top:8px;">🔄 다시 시도</button>`;
+    const rb=document.getElementById('sheetRefreshBtn2'); if(rb) rb.onclick=()=>loadSheetRoster();
+  }
+}
+function showSheetStudentDetail(group){
+  // 같은 문항을 여러 번 풀었으면 가장 최근 시도의 결과만 남기고, 그중 틀린 것만 오답으로 표시
+  const map=new Map();
+  group.rows.slice().sort((a,b)=>a.ts-b.ts).forEach(r=>{
+    (r.detail||[]).forEach(d=>{ map.set(d.id, d); });
+  });
+  const wrongItems=[...map.values()].filter(d=>d.ok===false);
+  const area=document.getElementById('sheetStudentDetail');
+  area.innerHTML=`
+  <div id="printArea">
+    <h3 style="margin:0 0 6px;">📝 ${group.name}님의 오답 (구글시트 누적)</h3>
+    <div style="font-size:12px;color:var(--sub);margin-bottom:10px;">응시 ${group.count}회 · 평균 ${Math.round(group.scoreSum/group.count)}점 · 최근 ${fmtDT(group.lastTs)}</div>
+    ${wrongItems.length===0?'<p>기록된 오답이 없어요! 완벽해요 🎉</p>':
+      wrongItems.map((w,i)=>{
+        const q=questionById(w.id);
+        return `<div class="wrongitem"><div class="wq">${i+1}. ${w.q||(q?q.q:'(삭제된 문제)')}</div>
+        <div class="wu">쓴 답: ${w.your}</div>
+        <div class="wa">정답: ${q?(q.t==='mcq'?q.o[q.a]:q.a):'-'}</div>
+        <div style="font-size:12.5px;color:var(--sub);margin-top:4px;">${q?q.e:''}</div></div>`;
+      }).join('')}
+  </div>
+  <div class="row2" style="margin-top:12px;">
+    <button class="btn btn-outline" id="sheetPrintBtn">🖨️ 인쇄하기</button>
+    <button class="btn btn-primary" id="sheetPdfBtn">💾 PDF로 저장</button>
+  </div>`;
+  document.getElementById('sheetPrintBtn').onclick=()=>window.print();
+  document.getElementById('sheetPdfBtn').onclick=()=>generateSheetStudentPDF(group.name);
+}
+/* 학생용 PDF 생성 로직(generateWrongNotePDF)을 그대로 재사용해요. 그 함수는
+   #printArea 내용을 캡처하고 파일명에 state.name을 사용하므로, 잠깐 state.name을
+   조회 중인 학생 이름으로 바꿔치기했다가 되돌려요. */
+function generateSheetStudentPDF(name){
+  const prevName=state.name;
+  state.name=name;
+  generateWrongNotePDF().finally(()=>{state.name=prevName;});
+}
+
+function tabAllHtml(results){
+  const groups={};
+  results.forEach(r=>{const k=monthKey(r.ts);(groups[k]=groups[k]||[]).push(r);});
+  const keys=Object.keys(groups);
+  return `
+  <div class="row2" style="margin-bottom:10px;">
+    <button class="btn btn-ghost sortBtn" data-sort="new">최신순</button>
+    <button class="btn btn-ghost sortBtn" data-sort="old">오래된순</button>
+  </div>
+  <button class="btn btn-outline" id="refreshBtn">🔄 새로고침</button>
+  ${keys.length===0?'<p style="margin-top:14px;">아직 시험 기록이 없어요.</p>':
+  keys.map(k=>{
+    const rows=groups[k];
+    return `<div class="month-head">${k} (${rows.length}건)</div>
+    <table><tr><th>이름</th><th>점수</th><th>정답률</th><th>진행</th><th>모드</th></tr>
+    ${rows.map(r=>`<tr><td>${r.name}</td><td><b style="color:${r.score>=90?'var(--good)':'var(--artery-dark)'}">${r.score}/100</b></td>
+      <td>${r.answered>0?Math.round(r.correct/r.answered*100):0}%</td>
+      <td style="color:${r.complete?'var(--good)':'#c0392b'};">${r.complete?'완료':'중도('+r.answered+'/'+r.total+')'}</td>
+      <td>${modeLabel(r.mode)}</td></tr>`).join('')}
+    </table>`;
+  }).join('')}
+  `;
+}
+function modeLabel(m){return {full:'전체',focus:'집중력',deep:'꼼꼼정독',wrong:'오답',mission:'5분미션'}[m]||m;}
+
+function tabStudentHtml(results){
+  return `
+  <input type="text" id="studentSearch" class="kbdinput" placeholder="학생 이름으로 검색">
+  <div id="studentResultArea"><p style="color:var(--sub);font-size:13px;">학생 이름을 입력하면 지금까지 본 모든 시험 점수를 볼 수 있어요.</p></div>
+  `;
+}
+function tabCouponHtml(){
+  return `<input type="text" id="couponSearch" class="kbdinput" placeholder="학생 이름으로 검색 (비우면 전체)">
+  <div id="couponResultArea"><p style="color:var(--sub);font-size:13px;">불러오는 중...</p></div>`;
+}
+function tabExcelHtml(results){
+  return `
+  <p>기간을 골라 엑셀(xlsx) 파일로 내려받아요.</p>
+  <div class="chip-grid" id="excelRangeGrid">
+    <div class="chip active" data-range="all"><b>전체 기간</b></div>
+    <div class="chip" data-range="week"><b>이번 주만</b></div>
+    <div class="chip" data-range="month"><b>이번 달만</b></div>
+    <div class="chip" data-range="semester"><b>이번 학기만</b></div>
+    <div class="chip" data-range="year"><b>올해만</b></div>
+  </div>
+  <button class="btn btn-primary" id="excelDownloadBtn" style="margin-top:14px;">⬇️ 엑셀 다운로드</button>
+  <hr style="margin:22px 0;border:none;border-top:1px solid var(--line);">
+  <div class="warnbox">⚠️ 학기 마감<br>현재까지 쌓인 시험 기록을 전체 엑셀로 저장한 뒤 초기화해요. 포인트·쿠폰·랭킹은 그대로 유지돼요.</div>
+  <button class="btn btn-outline" id="semesterEndBtn" style="border-color:#c0392b;color:#c0392b;">🗑️ 학기 마감하고 기록 초기화</button>
+  `;
+}
+
+function bindTeacherEvents(results){
+  document.getElementById('backHomeBtn').onclick=()=>{screen='setup';render();};
+  document.querySelectorAll('.tabbtn').forEach(el=>{
+    el.onclick=()=>{tdashTab=el.dataset.tab;document.getElementById('tdashBody').innerHTML=tdashBodyHtml(results);bindTabInner(results);};
+  });
+  bindTabInner(results);
+}
+function bindTabInner(results){
+  if(tdashTab==='sheet'){
+    loadSheetRoster();
+  }
+  if(tdashTab==='all'){
+    const rb=document.getElementById('refreshBtn');if(rb)rb.onclick=async()=>{renderTeacherDashAsync();};
+    document.querySelectorAll('.sortBtn').forEach(b=>{
+      b.onclick=()=>{
+        results.sort((a,b2)=>b.dataset.sort==='new'?b2.ts-a.ts:a.ts-b2.ts);
+        document.getElementById('tdashBody').innerHTML=tabAllHtml(results);bindTabInner(results);
+      };
+    });
+  }
+  if(tdashTab==='student'){
+    const inp=document.getElementById('studentSearch');
+    inp.oninput=()=>{
+      const name=inp.value.trim();
+      const area=document.getElementById('studentResultArea');
+      if(!name){area.innerHTML='<p style="color:var(--sub);font-size:13px;">학생 이름을 입력하면 지금까지 본 모든 시험 점수를 볼 수 있어요.</p>';return;}
+      const rows=results.filter(r=>r.name.includes(name)).sort((a,b)=>b.ts-a.ts);
+      area.innerHTML=rows.length===0?'<p>검색 결과가 없어요.</p>':
+        `<table><tr><th>날짜</th><th>점수</th><th>맞은/전체</th><th>진행</th></tr>
+        ${rows.map(r=>`<tr><td>${fmtDT(r.ts)}</td><td>${r.score}점</td><td>${r.correct}/${r.answered}</td><td>${r.complete?'완료':'중도포기'}</td></tr>`).join('')}</table>`;
+    };
+  }
+  if(tdashTab==='coupon'){
+    loadCouponTab();
+    const inp=document.getElementById('couponSearch');
+    inp.oninput=()=>loadCouponTab(inp.value.trim());
+  }
+  if(tdashTab==='excel'){
+    document.querySelectorAll('#excelRangeGrid .chip').forEach(c=>{
+      c.onclick=()=>{document.querySelectorAll('#excelRangeGrid .chip').forEach(x=>x.classList.remove('active'));c.classList.add('active');};
+    });
+    document.getElementById('excelDownloadBtn').onclick=()=>doExcelDownload(results);
+    document.getElementById('semesterEndBtn').onclick=()=>doSemesterEnd(results);
+  }
+}
+async function loadCouponTab(filter){
+  const area=document.getElementById('couponResultArea');
+  if(!area)return;
+  const {data:ed}=await getExamData();
+  const results=ed.results||[];
+  const names=[...new Set(results.map(r=>r.name))].filter(n=>!filter||n.includes(filter));
+  if(names.length===0){area.innerHTML='<p>발급된 쿠폰이 없어요.</p>';return;}
+  // 동시에(병렬로) 여러 학생 데이터를 요청하면 일부 환경에서 조용히 실패할 수 있어
+  // 한 명씩 순서대로 불러와요.
+  const rowsArr=[];
+  for(const n of names){
+    const {data:sd}=await getStudentData(n);
+    rowsArr.push({name:n,...(sd.profile||{points:0,coupons:0,level:1})});
+  }
+  const withCoupon=rowsArr.filter(r=>(r.coupons||0)>0);
+  area.innerHTML=`
+  <table><tr><th>이름</th><th>포인트</th><th>레벨</th><th>쿠폰</th></tr>
+  ${rowsArr.map(r=>`<tr><td>${r.name}</td><td>${r.points}P</td><td>Lv.${r.level}</td><td>${(r.coupons||0)>0?'🍦x'+r.coupons:'-'}</td></tr>`).join('')}
+  </table>
+  ${withCoupon.length>0?`<div class="coupon-toast" style="margin-top:14px;">🍦 쿠폰 대상 학생: ${withCoupon.map(r=>r.name).join(', ')}</div>`:'<p style="margin-top:10px;color:var(--sub);font-size:13px;">아직 쿠폰을 받은 학생이 없어요.</p>'}
+  `;
+}
+function inRange(ts,range){
+  const d=new Date(ts),now=new Date();
+  if(range==='all')return true;
+  if(range==='week'){const start=new Date(now);start.setDate(now.getDate()-now.getDay());start.setHours(0,0,0,0);return ts>=start.getTime();}
+  if(range==='month')return d.getFullYear()===now.getFullYear()&&d.getMonth()===now.getMonth();
+  if(range==='year')return d.getFullYear()===now.getFullYear();
+  if(range==='semester'){
+    const sem1=now.getMonth()<6;
+    const dsem1=d.getMonth()<6;
+    return d.getFullYear()===now.getFullYear() && dsem1===sem1;
+  }
+  return true;
+}
+function doExcelDownload(results){
+  const active=document.querySelector('#excelRangeGrid .chip.active');
+  const range=active?active.dataset.range:'all';
+  const rows=results.filter(r=>inRange(r.ts,range)).sort((a,b)=>a.ts-b.ts).map(r=>({
+    이름:r.name,날짜:fmtDT(r.ts),점수:r.score,'맞은개수':r.correct,'전체문제':r.total,'푼문제':r.answered,
+    진행:r.complete?'완료':'중도포기',모드:modeLabel(r.mode),범위:r.cats
+  }));
+  if(rows.length===0){showAlert('해당 기간에 데이터가 없어요.');return;}
+  const ws=XLSX.utils.json_to_sheet(rows);
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'호흡결과');
+  XLSX.writeFile(wb,`호흡탐험대_결과_${range}_${fmtDate(Date.now())}.xlsx`);
+}
+async function doSemesterEnd(results){
+  const ok=await showConfirm('현재까지 기록을 엑셀로 저장한 뒤 초기화할까요? 포인트·쿠폰·랭킹은 유지돼요.');
+  if(!ok)return;
+  doExcelDownload(results);
+  const {data:ed, failed}=await getExamData();
+  if(failed){await showAlert('기록을 불러오지 못해 초기화를 진행하지 않았어요. 다시 시도해 주세요.');return;}
+  ed.results=[];
+  const ok2=await setExamData(ed);
+  if(!ok2){await showAlert('초기화 저장에 실패했어요. 다시 시도해 주세요.');return;}
+  await showAlert('학기가 마감되고 시험 기록이 초기화됐어요.');
+  renderTeacherDashAsync();
+}
+
+/* ============ EVENT BINDING ============ */
+function bindEvents(){
+  if(screen==='setup'){
+    document.getElementById('nameInput').oninput=(e)=>{state.name=e.target.value;};
+    document.querySelectorAll('.chip').forEach(c=>{
+      c.onclick=()=>{
+        const id=c.dataset.cat;
+        if(state.cats.includes(id)) state.cats=state.cats.filter(x=>x!==id);
+        else state.cats.push(id);
+        render();
+      };
+    });
+    document.getElementById('shuffleChk').onchange=(e)=>{state.order=e.target.checked?'shuffle':'seq';};
+    document.querySelectorAll('.mode-card').forEach(m=>{
+      m.onclick=(e)=>{
+        if(e.target.closest('.scope-chip')) return; // 오답 범위 칩 클릭은 모드 카드 클릭과 분리
+        state.mode=m.dataset.mode;render();
+      };
+    });
+    document.querySelectorAll('.scope-chip').forEach(c=>{
+      c.onclick=(e)=>{e.stopPropagation();state.wrongScope=c.dataset.scope;render();};
+    });
+    document.getElementById('missionBtn').onclick=()=>{state.missionStarted=false;startQuiz('mission');};
+    document.getElementById('startBtn').onclick=()=>{state.missionStarted=false;startQuiz(state.mode);};
+    document.getElementById('couponBtn').onclick=()=>{
+      const nameEl=document.getElementById('nameInput');state.name=nameEl.value.trim();
+      showCouponScreen();
+    };
+    document.getElementById('hofBtn').onclick=()=>{showHOFScreen();};
+    document.getElementById('wrongHistoryBtn').onclick=()=>{showWrongHistoryScreen();};
+    document.getElementById('teacherBtn').onclick=()=>{screen='tlogin';render();};
+    document.getElementById('resetMyDataBtn').onclick=async()=>{
+      const nameEl=document.getElementById('nameInput');
+      const nm=(nameEl?nameEl.value:state.name).trim();
+      if(!nm){showAlert('먼저 이름을 입력해 주세요!');return;}
+      const ok=await showConfirm(`"${nm}"님의 오답노트와 포인트·쿠폰 기록을 모두 지울까요? 이 작업은 되돌릴 수 없어요.`);
+      if(!ok)return;
+      showLoading('초기화하고 있어요...');
+      const ok2=await setStudentData(nm,{profile:{points:0,level:1,coupons:0},wrong:[],examLogs:[]});
+      hideLoading();
+      await showAlert(ok2?'초기화됐어요! 이제 새로 시작해 보세요.':'초기화 저장에 실패했어요. 인터넷 연결을 확인하고 다시 시도해 주세요.');
+    };
+    document.getElementById('storageTestBtn').onclick=async()=>{
+      showLoading('저장 기능을 테스트하고 있어요...');
+      const testKey='storagetest_'+APP_KEY;
+      const testVal={ping:Date.now()};
+      let writeOk=false, readOk=false, readBack=null;
+      try{
+        const w=await sset(testKey,testVal);
+        writeOk=w.ok;
+        if(writeOk){
+          const r=await sget(testKey);
+          readOk=!r.failed && r.value && r.value.ping===testVal.ping;
+          readBack=r.value;
+        }
+      }catch(e){}
+      hideLoading();
+      if(writeOk && readOk){
+        await showAlert('✅ 저장 기능이 정상 작동해요!\n\n오답모드가 계속 안 된다면, 실제로 저장된 시험 기록이 없는 경우예요. 시험을 한 번 보고 나서 결과 화면에 저장 실패 경고가 없는지 확인한 뒤, 오답모드를 다시 시도해 주세요.');
+      } else {
+        await showAlert('❌ 저장 기능을 사용할 수 없는 상태예요.\n\n가장 흔한 원인은 시크릿(비공개) 모드로 열었거나, 브라우저 설정에서 사이트 데이터 저장을 차단해 둔 경우예요.\n\n일반 브라우저 창(시크릿 모드 아님)에서 다시 열어 시도해 주세요.');
+      }
+    };
+  }
+  else if(screen==='quiz'){
+    if(!state.submitted){
+      document.querySelectorAll('.choice').forEach(c=>{
+        c.onclick=()=>{
+          if(state.mode==='deep' && Date.now()<state.lockUntil){return;}
+          state.selected=parseInt(c.dataset.idx);render();
+        };
+      });
+      const si=document.getElementById('shortInput');
+      if(si) si.oninput=(e)=>{state.selected=e.target.value;};
+      const sb=document.getElementById('submitBtn');
+      if(sb) sb.onclick=async()=>{
+        if(state.mode==='deep' && Date.now()<state.lockUntil){showAlert('아직 5초가 지나지 않았어요!');return;}
+        if(state.selected===null || state.selected===undefined || state.selected===''){
+          const ok=await showConfirm('답을 선택하지 않았어요. 그래도 제출할까요?');
+          if(!ok){return;}
+        }
+        handleSubmit(false);
+      };
+    } else {
+      document.getElementById('nextBtn').onclick=()=>goNext();
+    }
+    document.getElementById('giveupBtn').onclick=async()=>{
+      if(isFinalizing) return;
+      const ok=await showConfirm('정말 그만 풀고 지금까지 점수를 낼까요?');
+      if(ok) giveUp();
+    };
+  }
+  else if(screen==='setresult'){
+    document.getElementById('nextSetBtn').onclick=()=>{render();startTimerForCurrent();};
+    document.getElementById('giveupSetBtn').onclick=async()=>{
+      if(isFinalizing) return;
+      const ok=await showConfirm('정말 그만 풀고 지금까지 점수를 낼까요?');
+      if(ok) giveUp();
+    };
+  }
+  else if(screen==='result'){
+    document.getElementById('wrongNoteBtn').onclick=()=>{screen='wrongnote';render();};
+    document.getElementById('backHomeBtn').onclick=()=>{state=newSession();screen='setup';render();};
+    document.getElementById('retryBtn').onclick=()=>{const nm=state.name;const cats=state.cats;const ord=state.order;const md=state.mode;state=newSession();state.name=nm;state.cats=cats;state.order=ord;state.mode=md;screen='setup';render();};
+    const rsb=document.getElementById('retrySaveBtn');
+    if(rsb) rsb.onclick=()=>retrySaveResult();
+  }
+  else if(screen==='wrongnote'){
+    document.getElementById('pdfBtn').onclick=()=>generateWrongNotePDF();
+    document.getElementById('backResultBtn').onclick=()=>{screen='result';render();};
+  }
+  else if(screen==='tlogin'){
+    document.getElementById('pwSubmit').onclick=()=>{
+      const v=document.getElementById('pwInput').value;
+      if(v===TEACHER_PW){screen='tdash';render();renderTeacherDashAsync();}
+      else showAlert('비밀번호가 틀렸어요.');
+    };
+    document.getElementById('pwCancel').onclick=()=>{screen='setup';render();};
+  }
+}
+
+render();
+</script>
+</body>
+</html>
