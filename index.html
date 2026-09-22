@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>호흡 80제</title>
+<title>호흡 114제</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
@@ -144,9 +144,11 @@ const CATS = [
   {id:'movement', name:'호흡운동의 원리', icon:'🌬️'},
   {id:'exchange', name:'기체 교환', icon:'🔄'},
   {id:'experiment', name:'호흡운동 모형 탐구', icon:'🧪'},
+  {id:'oxreason', name:'OX 함정문장 찾기', icon:'🎯'},
 ];
 
 function M(c,q,o,a,e,img){return {c,t:'mcq',q,o,a,e,img:img||null};}
+function OX(c,q,isTrue,reasons,ra,e){return {c,t:'ox2',q,isTrue,reasons:reasons||[],ra:(ra===undefined?null:ra),e};}
 
 const QUESTIONS = [
 // ===== 호흡계의 구조 =====
@@ -238,6 +240,42 @@ M('experiment','페트병 모형 실험에서 쇠고리를 위로 올리면 고�
 M('experiment','페트병 모형 실험에서 쇠고리를 아래로 내리면 고무풍선은 어떻게 되는가?',['커진다','작아진다','2배로 부푼다','색이 변한다'],1,'쇠고리를 내리면 페트병 속 부피가 작아지고 압력이 높아져 고무풍선이 작아져요.'),
 M('experiment','페트병 모형 실험에서 쇠고리를 올리는 것은 사람의 호흡운동에서 무엇에 해당하는가?',['날숨','기침','들숨','재채기'],2,'쇠고리를 올리는 것은 갈비뼈가 올라가는 들숨에 해당해요.'),
 M('experiment','고무풍선이 부풀 때, 공기가 이동하는 방향으로 옳은 것은?',['고무풍선에서 밖으로','이동하지 않는다','고무풍선 안에서 맴돈다','밖에서 고무풍선 안으로'],3,'고무풍선이 부풀 때는 공기가 밖에서 고무풍선 안으로 들어와요.'),
+
+// ===== OX 함정문장 찾기 =====
+OX("oxreason",'폐는 근육으로 이루어져 있어 스스로 수축하고 이완할 수 있다.',false,['폐에는 근육이 없어서 스스로 수축·이완하지 못하고, 갈비뼈와 가로막의 움직임에 따라 크기가 변하기 때문','폐는 근육이 아니라 뼈로 둘러싸여 있어 스스로 움직이지 못하기 때문','폐는 근육으로 되어 있지만 뇌의 명령이 없으면 움직이지 않기 때문'],0,'폐는 근육이 없어 스스로 수축하거나 이완할 수 없어요. 그래서 갈비뼈와 가로막의 움직임에 의해 흉강의 부피가 변하면서 호흡 운동이 일어나요.'),
+OX("oxreason",'심장은 코, 숨관, 폐와 함께 호흡계를 구성하는 기관이다.',false,['심장은 산소를 이산화 탄소로 직접 바꾸는 기관이기 때문','심장은 호흡계가 아니라 혈액을 순환시키는 순환계에 속하는 기관이기 때문','심장은 허파꽈리와 모세혈관을 연결하는 관이기 때문'],1,'호흡계는 코, 숨관, 숨관가지, 폐로 이루어져요. 심장은 혈액을 순환시키는 순환계의 기관이에요.'),
+OX("oxreason",'허파꽈리는 표면적을 넓혀 기체 교환이 효율적으로 일어나도록 한다.',true,[],null,'폐는 수많은 허파꽈리로 이루어져 있어 공기와 닿는 표면적이 넓어지고, 그만큼 기체 교환이 효율적으로 일어나요.'),
+OX("oxreason",'날숨에는 들숨보다 산소가 더 많이 들어 있다.',false,['산소와 이산화 탄소는 들숨과 날숨에서 항상 같은 양으로 들어 있기 때문','산소는 코에서 모두 걸러지기 때문에 들숨과 날숨 모두 산소가 없기 때문','산소는 몸에서 흡수되어 사용되므로 날숨보다 들숨에 산소가 더 많기 때문'],2,'몸속에서 산소를 흡수해 사용하므로 날숨보다 들숨에 산소가 더 많이 들어 있어요.'),
+OX("oxreason",'숨을 들이쉴 때 공기는 코 → 숨관가지 → 숨관 → 허파꽈리 순서로 이동한다.',false,['숨관가지가 아니라 숨관을 먼저 지난 뒤에 숨관가지를 지나야 하기 때문','공기는 코가 아니라 입을 통해서만 이동하기 때문','허파꽈리를 지난 뒤에 숨관가지를 지나기 때문'],0,'공기는 코 → 숨관 → 숨관가지 → 허파꽈리 순서로 이동해요. 숨관이 두 개의 숨관가지로 갈라지고, 숨관가지가 다시 허파꽈리와 연결돼요.'),
+OX("oxreason",'들숨이 일어날 때 갈비뼈는 내려가고 가로막은 올라간다.',false,['들숨과 날숨 모두 갈비뼈와 가로막이 움직이지 않기 때문','들숨이 일어날 때는 갈비뼈가 올라가고 가로막이 내려가 흉강의 부피가 커지기 때문','들숨이 일어날 때는 가로막만 움직이고 갈비뼈는 움직이지 않기 때문'],1,'들숨이 일어날 때는 갈비뼈가 올라가고 가로막이 내려가면서 흉강의 부피가 커져요. 갈비뼈가 내려가고 가로막이 올라가는 것은 날숨 때예요.'),
+OX("oxreason",'들숨이 일어날 때 폐 내부의 압력은 대기압보다 높아져 공기가 폐 안으로 들어온다.',false,['공기는 압력과 관계없이 항상 폐 안으로 이동하기 때문','폐 내부의 압력이 대기압과 같아졌을 때 공기가 가장 빠르게 이동하기 때문','들숨이 일어날 때 폐 내부의 압력은 대기압보다 낮아지고, 공기는 압력이 높은 대기에서 압력이 낮은 폐 안으로 이동하기 때문'],2,'들숨이 일어날 때 흉강과 폐의 부피가 커지면서 폐 내부의 압력은 대기압보다 낮아져요. 공기는 압력이 높은 곳(대기)에서 낮은 곳(폐)으로 이동하므로 공기가 폐 안으로 들어와요.'),
+OX("oxreason",'기체의 부피는 압력에 반비례하며, 이 관계를 보일 법칙이라고 한다.',true,[],null,'보일 법칙에 따르면 기체의 부피는 압력에 반비례해요. 흉강의 부피가 커지면 압력이 낮아지고, 부피가 작아지면 압력이 높아지는 것도 이 원리로 설명돼요.'),
+OX("oxreason",'허파꽈리에서 산소는 모세혈관에서 허파꽈리로 이동한다.',false,['허파꽈리는 산소 농도가 모세혈관보다 높아 산소가 허파꽈리에서 모세혈관으로 이동하기 때문','산소는 확산이 아니라 심장의 펌프 작용으로 이동하기 때문','허파꽈리에는 산소가 없고 이산화 탄소만 있기 때문'],0,'허파꽈리는 모세혈관보다 산소 농도가 높아서, 산소는 농도가 높은 허파꽈리에서 낮은 모세혈관으로 확산에 의해 이동해요.'),
+OX("oxreason",'조직 세포에서 이산화 탄소는 모세혈관에서 조직 세포로 이동한다.',false,['이산화 탄소는 확산이 아니라 삼투에 의해 이동하기 때문','조직 세포는 이산화 탄소 농도가 모세혈관보다 높아서, 이산화 탄소가 조직 세포에서 모세혈관으로 이동하기 때문','조직 세포에는 이산화 탄소가 존재하지 않기 때문'],1,'조직 세포는 세포 호흡으로 이산화 탄소가 계속 만들어져 모세혈관보다 이산화 탄소 농도가 높아요. 그래서 이산화 탄소는 조직 세포에서 모세혈관으로 확산에 의해 이동해요.'),
+OX("oxreason",'산소는 주로 혈장을 통해 운반되고, 이산화 탄소는 주로 적혈구를 통해 운반된다.',false,['산소와 이산화 탄소는 모두 적혈구가 아니라 백혈구를 통해 운반되기 때문','산소와 이산화 탄소는 모두 혈장에만 녹아 운반되고 적혈구는 관여하지 않기 때문','산소는 주로 적혈구를 통해 운반되고, 이산화 탄소는 주로 혈장을 통해 운반되기 때문'],2,'산소는 주로 적혈구를 통해 운반되고, 이산화 탄소는 주로 혈장을 통해 운반돼요.'),
+OX("oxreason",'호흡운동 모형 실험에서 고무 막은 폐를, 작은 고무풍선은 가로막을 나타낸다.',false,['고무 막은 가로막을, 작은 고무풍선은 폐를 나타내기 때문','고무 막과 고무풍선은 둘 다 갈비뼈를 나타내기 때문','고무 막은 숨관을, 고무풍선은 흉강을 나타내기 때문'],0,'호흡운동 모형 실험에서 작은 고무풍선은 폐를, 큰 고무 막은 가로막을 나타내요.'),
+OX("oxreason",'호흡운동 모형에서 고무 막을 아래로 잡아당기면 컵 속의 부피가 커지고 압력이 낮아져 고무풍선이 부푼다.',true,[],null,'고무 막을 잡아당기면 컵(흉강) 속 부피가 커지고 압력이 낮아지면서 고무풍선(폐)이 부풀어요. 이는 들숨과 같은 원리예요.'),
+OX("oxreason",'가로막은 좌우로 움직이면서 호흡 운동을 일으킨다.',false,['가로막은 좌우가 아니라 위아래로 움직이면서 흉강의 부피를 변화시키기 때문','가로막은 전혀 움직이지 않고 갈비뼈만 움직여 호흡이 일어나기 때문','가로막은 앞뒤로 움직이며 폐를 직접 눌러 공기를 내보내기 때문'],0,'가로막은 좌우가 아니라 위아래(상하)로 움직여요. 가로막이 내려가면 흉강의 부피가 커지고, 올라가면 흉강의 부피가 작아지면서 호흡 운동이 일어나요.'),
+OX("oxreason",'들숨이 일어날 때 폐의 부피는 작아지고, 날숨이 일어날 때 폐의 부피는 커진다.',false,['폐의 부피는 들숨과 날숨에 관계없이 항상 일정하게 유지되기 때문','실제로는 들숨 때 흉강과 폐의 부피가 커지고, 날숨 때 흉강과 폐의 부피가 작아지기 때문','폐의 부피 변화는 가로막이 아니라 심장의 박동에 의해 일어나기 때문'],1,'들숨이 일어날 때는 흉강과 폐의 부피가 커지고, 날숨이 일어날 때는 흉강과 폐의 부피가 작아져요. 제시된 문장은 이와 반대로 설명하고 있어요.'),
+OX("oxreason",'호흡운동 모형 실험에서 유리관은 숨관을, 고무풍선은 숨관가지를 나타낸다.',false,['유리관은 숨관이 아니라 허파꽈리를 나타내기 때문','고무풍선은 가로막을 나타내고 유리관은 숨관가지를 나타내기 때문','고무풍선은 숨관가지가 아니라 폐를 나타내기 때문'],2,'호흡운동 모형 실험에서 유리관은 숨관을, 고무풍선은 폐를, 고무막은 가로막을 나타내요. 숨관가지를 별도로 나타내는 부분은 없어요.'),
+OX("oxreason",'호흡운동 모형 실험에서 유리관은 숨관을, 고무풍선은 폐를, 고무막은 가로막을 나타낸다.',true,[],null,'호흡운동 모형 실험에서 유리관은 숨관, 고무풍선은 폐, 고무막은 가로막에 해당해요. 이 모형으로 흉강의 부피 변화에 따른 폐의 공기 이동을 설명할 수 있어요.'),
+OX("oxreason",'호흡운동 모형에서 고무막을 놓아 원래 위치로 되돌리면 컵(흉강) 속 부피가 커지는 날숨이 일어난다.',false,['고무막을 놓으면 컵 속 부피가 오히려 작아지고 압력이 높아지면서 날숨이 일어나기 때문','고무막을 놓아도 컵 속 부피와 압력은 전혀 변하지 않기 때문','고무막을 놓으면 들숨이 일어나 고무풍선이 더 크게 부풀어 오르기 때문'],0,'고무막을 놓아 원래 위치로 되돌리면 컵(흉강) 속 부피가 작아지고 압력이 높아지면서 고무풍선(폐) 속 공기가 빠져나가는 날숨이 일어나요.'),
+OX("oxreason",'호흡운동 모형 실험은 가로막의 상하 운동을 설명하는 데는 유용하지만, 갈비뼈의 움직임에 의한 호흡 운동은 설명하기 어렵다는 한계가 있다.',true,[],null,'호흡운동 모형은 고무막의 상하 운동으로 가로막의 작용은 잘 보여주지만, 갈비뼈가 오르내리며 흉강의 부피를 변화시키는 과정은 표현하지 못한다는 한계가 있어요.'),
+OX("oxreason",'호흡운동 모형에서 고무막을 밀어 올리면 컵(흉강) 속 부피가 커지고 압력이 낮아져 고무풍선이 부푼다.',false,['고무막을 밀어 올려도 컵 속 부피와 압력은 변하지 않기 때문','고무막을 밀어 올리면 컵 속 부피가 오히려 작아지고 압력이 높아져 고무풍선 속 공기가 빠져나가기 때문','고무막을 밀어 올리면 고무풍선이 아니라 유리병이 직접 오그라들기 때문'],1,'고무막을 밀어 올리면 컵(흉강) 속 부피가 작아지고 압력이 높아지면서 고무풍선(폐) 속 공기가 밖으로 빠져나가요. 이는 날숨과 같은 원리예요.'),
+OX("oxreason",'허파꽈리는 여러 겹의 두꺼운 세포층으로 이루어져 있어 기체 교환이 활발하게 일어난다.',false,['허파꽈리는 세포층이 아니라 단단한 뼈로 이루어져 있기 때문','허파꽈리의 두꺼운 세포층은 기체 교환과 아무 관련이 없기 때문','허파꽈리는 여러 겹이 아니라 한 겹의 얇은 세포층으로 이루어져 있어 기체가 쉽게 확산될 수 있기 때문'],2,'허파꽈리는 한 겹의 얇은 세포층으로 이루어져 있어요. 벽이 얇을수록 기체가 더 쉽게 확산되어 기체 교환이 효율적으로 일어나요.'),
+OX("oxreason",'갈비뼈가 내려가고 가로막이 올라가면 폐 속의 압력이 낮아진다.',false,['갈비뼈가 내려가고 가로막이 올라가면 흉강의 부피가 작아져 폐 속 압력이 오히려 높아지기 때문','갈비뼈와 가로막의 움직임은 폐 속 압력과 아무 관계가 없기 때문','갈비뼈가 내려가고 가로막이 올라가는 것은 들숨이 일어날 때의 변화이기 때문'],0,'갈비뼈가 내려가고 가로막이 올라가는 것은 날숨이 일어날 때의 변화예요. 이때 흉강의 부피가 작아지면서 폐 속 압력은 대기압보다 높아져요.'),
+OX("oxreason",'숨관과 숨관가지의 안쪽 벽은 점액만 분비될 뿐 섬모는 없어 먼지를 걸러내지 못한다.',false,['먼지나 세균을 걸러내는 것은 숨관이 아니라 허파꽈리이기 때문','숨관과 숨관가지의 안쪽 벽에는 점액과 섬모가 함께 있어 먼지나 세균을 걸러내기 때문','숨관과 숨관가지의 안쪽 벽에는 점액도 섬모도 전혀 없기 때문'],1,'숨관과 숨관가지의 안쪽 벽은 점액과 섬모로 덮여 있어서 공기 중의 먼지나 세균 등을 걸러내는 역할을 해요.'),
+OX("oxreason",'숨을 들이마실 때 폐가 직접 아래로 내려오면서 흉강의 부피가 커진다.',false,['폐가 아래로 내려오는 것이 아니라 위로 올라가면서 흉강의 부피가 커지기 때문','숨을 들이마실 때는 흉강의 부피가 오히려 작아지기 때문','폐는 근육이 없어 스스로 움직이지 못하고, 실제로는 가로막이 내려가면서 흉강의 부피가 커지는 것이기 때문'],2,'폐는 근육이 없어 스스로 움직일 수 없어요. 숨을 들이마실 때는 가로막이 내려가고 갈비뼈가 올라가면서 흉강의 부피가 커지고, 그 결과 폐도 함께 팽창해요.'),
+OX("oxreason",'호흡계를 이루는 기관 중 가로막은 근육으로 이루어져 있어 스스로 수축과 이완 운동을 할 수 있다.',true,[],null,'가로막은 호흡계에서 근육으로 이루어져 스스로 수축·이완할 수 있는 부분이에요. 이 움직임에 따라 흉강의 부피가 변하면서 호흡 운동이 일어나요.'),
+OX("oxreason",'이산화 탄소는 조직 세포로 이동하여 세포 호흡에 이용된다.',false,['세포 호흡에 이용되는 기체는 이산화 탄소가 아니라 산소이며, 이산화 탄소는 세포 호흡 결과 발생하는 노폐물이기 때문','이산화 탄소는 조직 세포로 이동하지 않고 항상 허파꽈리에만 머물러 있기 때문','세포 호흡은 기체를 전혀 필요로 하지 않는 과정이기 때문'],0,'조직 세포에서는 산소를 이용해 세포 호흡을 하여 에너지를 얻고, 그 결과 이산화 탄소가 만들어져요. 이산화 탄소는 세포 호흡에 이용되는 것이 아니라 세포 호흡의 노폐물이에요.'),
+OX("oxreason",'산소는 조직 세포에서 세포 호흡에 이용되어 생명 활동에 필요한 에너지를 얻는 데 사용된다.',true,[],null,'산소는 조직 세포로 이동하여 세포 호흡에 이용되고, 이 과정에서 생명 활동에 필요한 에너지가 만들어져요.'),
+OX("oxreason",'기체 교환은 확산에 의해 저농도에서 고농도로 기체가 이동하는 현상이다.',false,['기체 교환은 확산이 아니라 삼투에 의해 일어나기 때문','확산은 농도가 높은 곳에서 낮은 곳으로 물질이 스스로 이동하는 현상이기 때문','기체 교환에서는 농도와 관계없이 기체가 무작위로 이동하기 때문'],1,'확산은 농도가 높은 곳에서 낮은 곳으로 물질이 이동하는 현상이에요. 기체 교환도 이 확산의 원리에 따라 고농도에서 저농도로 일어나요.'),
+OX("oxreason",'이산화 탄소는 허파꽈리보다 모세혈관에서 농도가 낮아서 허파꽈리에서 모세혈관으로 이동한다.',false,['이산화 탄소는 허파꽈리와 모세혈관에서 항상 같은 농도로 존재하기 때문','이산화 탄소는 확산이 아니라 능동 수송에 의해 이동하기 때문','실제로는 이산화 탄소의 농도가 허파꽈리보다 모세혈관에서 더 높아서, 이산화 탄소는 모세혈관에서 허파꽈리로 이동하기 때문'],2,'이산화 탄소는 허파꽈리보다 모세혈관(혈액)에 더 많이 들어 있어요. 그래서 이산화 탄소는 모세혈관에서 허파꽈리로 확산되어 날숨을 통해 몸 밖으로 나가요.'),
+OX("oxreason",'숨을 들이쉴 때 폐 속의 공기가 몸 밖으로 나간다.',false,['숨을 들이쉴 때는 공기가 몸 밖에서 폐 안으로 들어오고, 폐 속 공기가 몸 밖으로 나가는 것은 날숨 때 일어나는 일이기 때문','들숨과 날숨에 관계없이 공기는 항상 폐에서 몸 밖으로만 나가기 때문','숨을 들이쉴 때는 공기의 이동이 전혀 일어나지 않기 때문'],0,'숨을 들이쉴 때(들숨)는 공기가 몸 밖에서 폐 안으로 들어와요. 폐 속 공기가 몸 밖으로 나가는 것은 날숨이 일어날 때예요.'),
+OX("oxreason",'날숨이 일어날 때 폐 내부의 압력은 대기압보다 낮아진다.',false,['날숨이 일어날 때도 폐 내부의 압력은 대기압과 항상 같기 때문','날숨이 일어날 때는 흉강과 폐의 부피가 작아져 폐 내부의 압력이 대기압보다 오히려 높아지기 때문','폐 내부의 압력은 날숨과 들숨에 관계없이 일정하게 유지되기 때문'],1,'날숨이 일어날 때는 흉강과 폐의 부피가 작아지면서 폐 내부의 압력이 대기압보다 높아져요. 그래서 폐 속 공기가 몸 밖으로 밀려 나가요.'),
+OX("oxreason",'날숨이 일어날 때는 갈비뼈와 가로막이 모두 아래로 내려간다.',false,['날숨이 일어날 때는 갈비뼈와 가로막 모두 움직이지 않기 때문','날숨이 일어날 때는 갈비뼈가 올라가고 가로막이 내려가기 때문','날숨이 일어날 때는 갈비뼈가 내려가고 가로막은 올라가며, 둘이 같은 방향으로 움직이는 것이 아니기 때문'],2,'날숨이 일어날 때는 갈비뼈가 내려가고 가로막은 올라가요. 두 기관이 같은 방향(아래)으로 움직이는 것이 아니라 서로 반대 방향으로 움직여요.'),
+OX("oxreason",'폐(허파)는 가슴 속에 좌우 한 개씩 있어 모두 두 개이다.',true,[],null,'폐는 가슴 속 좌우에 한 개씩, 총 두 개가 있어요.'),
+OX("oxreason",'코는 들어오는 공기를 차고 건조하게 만들어 몸 안으로 들여보낸다.',false,['코는 차고 건조한 공기를 따뜻하고 축축하게 만들어 몸 안으로 들여보내기 때문','코는 공기의 온도와 습도를 전혀 변화시키지 않기 때문','공기를 따뜻하고 축축하게 만드는 기관은 코가 아니라 숨관이기 때문'],0,'코는 차고 건조한 공기를 따뜻하고 축축하게 바꾸어 몸 안으로 들여보내는 역할을 해요.'),
 ];
 
 /* ============ APP CONFIG ============ */
@@ -287,7 +325,7 @@ async function getStudentPassword(){ const c=await getLoginConfig(); return c.pa
 function newSession(){
   return {name:localStorage.getItem('lastname_'+APP_KEY)||'',cats:[],order:'seq',mode:'full',wrongScope:'all',randomCount:0,
     list:[],idx:0,correct:0,answers:{},wrong:[],combo:0,maxCombo:0,
-    setSize:20,setIdx:0,selected:null,submitted:false,giveUp:false,
+    setSize:20,setIdx:0,selected:null,submitted:false,giveUp:false,ox2Stage:1,
     lockUntil:0,lockTimerId:null,gsSessionId:null,timeLeft:60,timerId:null};
 }
 let state=newSession();
@@ -490,7 +528,7 @@ function renderLogin(){
   <div class="hero">
     <div class="eyebrow">중2과학 6-3단원 호흡</div>
     <h1>호흡</h1>
-    <p>호흡계 구조부터 기체 교환까지, 80제로 완전정복! ${QUESTIONS.length}제로 완전정복!</p>
+    <p>호흡계 구조부터 기체 교환까지, OX 함정문장까지! ${QUESTIONS.length}제로 완전정복!</p>
   </div>
   <div class="card">
     <label class="field-label">🙋 이름(아이디)을 입력해줘</label>
@@ -550,7 +588,7 @@ function renderSetup(){
   <div class="hero">
     <div class="eyebrow">중2과학 6-3단원 호흡</div>
     <h1>호흡</h1>
-    <p>호흡계 구조부터 기체 교환까지, 80제로 완전정복! ${QUESTIONS.length}제로 완전정복!</p>
+    <p>호흡계 구조부터 기체 교환까지, OX 함정문장까지! ${QUESTIONS.length}제로 완전정복!</p>
   </div>
   <div class="card">
     <label class="field-label">👋 ${state.name}님, 반가워요!</label>
@@ -715,7 +753,7 @@ function beginList(list){
   clearResumeSnapshot(state.name);
   state.list=list;
   state.idx=0;state.correct=0;state.wrong=[];state.answers={};
-  state.setIdx=0;state.selected=null;state.submitted=false;state.giveUp=false;
+  state.setIdx=0;state.selected=null;state.submitted=false;state.giveUp=false;state.ox2Stage=1;
   state.gsSessionId=uid();
   screen='quiz';
   render();
@@ -725,6 +763,37 @@ function beginList(list){
 /* ============ QUIZ SCREEN ============ */
 function currentQ(){return state.list[state.idx];}
 
+function renderOX2UI(q,isLocked){
+  if(state.ox2Stage===2){
+    return q.reasons.map((r,i)=>{
+      let cls='choice';
+      if(state.submitted){
+        if(i===q.ra) cls+=' correct';
+        else if(i===state.selected) cls+=' wrong';
+      } else if(isLocked){
+        cls+=' locked';
+      } else if(state.selected===i){
+        cls+=' sel';
+      }
+      return `<div class="${cls}" data-idx="${i}">${['①','②','③'][i]} ${r}</div>`;
+    }).join('');
+  }
+  const labels=['⭕ 맞는 문장이에요','❌ 틀린 문장이에요'];
+  const correctIdx=q.isTrue?0:1;
+  return labels.map((label,i)=>{
+    let cls='choice';
+    if(state.submitted){
+      if(i===correctIdx) cls+=' correct';
+      else if(i===state.selected) cls+=' wrong';
+    } else if(isLocked){
+      cls+=' locked';
+    } else if(state.selected===i){
+      cls+=' sel';
+    }
+    return `<div class="${cls}" data-idx="${i}">${label}</div>`;
+  }).join('');
+}
+
 function renderQuiz(){
   const q=currentQ();
   if(!q) return renderResult();
@@ -732,7 +801,8 @@ function renderQuiz(){
   const timePct=Math.max(0,state.timeLeft/60*100);
   const submittedInfo=state.submitted?state.lastResult:null;
   const isLocked=state.mode==='deep' && !state.submitted && Date.now()<state.lockUntil;
-  const choicesHtml=q.o.map((opt,i)=>{
+  const isOX2=q.t==='ox2';
+  const choicesHtml=isOX2 ? renderOX2UI(q,isLocked) : q.o.map((opt,i)=>{
     let cls='choice';
     if(state.submitted){
       if(i===q.a) cls+=' correct';
@@ -744,6 +814,9 @@ function renderQuiz(){
     }
     return `<div class="${cls}" data-idx="${i}">${['①','②','③','④'][i]} ${opt}</div>`;
   }).join('');
+  const ox2StageTag=isOX2 ? (state.ox2Stage===2
+    ? `<div class="tag" style="background:#fdeceb;color:#c0392b;">2단계 · 이 문장이 틀린 진짜 이유는?</div>`
+    : `<div class="tag">1단계 · 이 문장, 맞을까요 틀릴까요?</div>`) : '';
   let feedback='';
   if(state.submitted){
     const ok=submittedInfo.ok;
@@ -759,6 +832,7 @@ function renderQuiz(){
     ${(state.combo||0)>=2?`<div class="combo-badge">🔥 ${state.combo}연속 정답!</div>`:''}
     <div class="qtext">Q${state.idx+1}. ${q.q}</div>
     ${q.img && IMG[q.img] ? `<img class="qimg" src="${IMG[q.img]}" alt="참고 그림">` : ''}
+    ${ox2StageTag}
     <div id="choicesWrap">${choicesHtml}</div>
     ${feedback}
     ${state.submitted?
@@ -814,9 +888,47 @@ function autoSubmitTimeout(){ if(!state.submitted){handleSubmit(true);} }
 function handleSubmit(timeout){
   clearInterval(state.timerId);
   const q=currentQ();
+  if(q.t==='ox2' && state.ox2Stage===1 && !(timeout && state.selected==null)){
+    const pick=state.selected===0?'O':'X';
+    if(!q.isTrue && pick==='X'){
+      state.ox2Stage=2; state.selected=null;
+      render();
+      return;
+    }
+  }
   let ok=false;
-  if(timeout && state.selected==null){ ok=false; }
-  else { ok=state.selected===q.a; }
+  let yourAnswerText='(제출 안함)';
+  let correctAnswerText;
+  if(q.t==='ox2'){
+    const correctFirstText = q.isTrue ? '⭕ 맞는 문장' : ('❌ 틀린 문장 · '+q.reasons[q.ra]);
+    if(state.ox2Stage===1){
+      if(timeout && state.selected==null){
+        ok=false; yourAnswerText='(제출 안함)';
+      } else {
+        const pick=state.selected===0?'O':'X';
+        if(q.isTrue){
+          ok = pick==='O';
+          yourAnswerText = pick==='O' ? '⭕ 맞는 문장' : '❌ 틀린 문장';
+        } else {
+          ok=false;
+          yourAnswerText='⭕ 맞는 문장';
+        }
+      }
+      correctAnswerText = correctFirstText;
+    } else {
+      if(timeout && state.selected==null){
+        ok=false; yourAnswerText='(이유 선택 안함)';
+      } else {
+        ok = state.selected===q.ra;
+        yourAnswerText = state.selected!=null ? ('❌ 틀린 문장 · '+q.reasons[state.selected]) : '(이유 선택 안함)';
+      }
+      correctAnswerText = correctFirstText;
+    }
+  } else {
+    if(timeout && state.selected==null){ ok=false; yourAnswerText='(제출 안함)'; }
+    else { ok=state.selected===q.a; yourAnswerText=state.selected!=null?q.o[state.selected]:'(제출 안함)'; }
+    correctAnswerText=q.o[q.a];
+  }
   state.submitted=true;
   state.lastResult={ok};
   state.answers[q._id]=ok;
@@ -828,7 +940,7 @@ function handleSubmit(timeout){
   else {
     state.combo=0;
     state.wrong=state.wrong.filter(w=>w.id!==q._id);
-    state.wrong.push({id:q._id,q:q.q,your:state.selected!=null?q.o[state.selected]:'(제출 안함)',correct:q.o[q.a],explain:q.e,cat:q.c});
+    state.wrong.push({id:q._id,q:q.q,your:yourAnswerText,correct:correctAnswerText,explain:q.e,cat:q.c});
   }
   render();
   saveResumeSnapshot();
@@ -836,7 +948,7 @@ function handleSubmit(timeout){
 
 function goNext(){
   state.idx++;
-  state.selected=null;state.submitted=false;
+  state.selected=null;state.submitted=false;state.ox2Stage=1;
   if(state.idx>=state.list.length){ finishQuiz(); return; }
   if(state.mode==='focus' && state.idx>0 && state.idx%state.setSize===0){
     screen='setresult';render();return;
